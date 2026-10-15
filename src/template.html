@@ -1,0 +1,1435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0A1F44">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="alternate icon" href="favicon.ico" sizes="32x32">
+<link rel="apple-touch-icon" href="favicon.svg">
+<title>Customer Experience &amp; NPS · Demo (synthetic data)</title>
+<script src="chart.umd.min.js"></script>
+<style>
+:root{
+  color-scheme: light;
+  /* brand chrome */
+  --navy:#0A1F44; --navy-2:#13306B; --brand:#1565C0;
+  /* dataviz surfaces & ink (validated reference palette, light mode) */
+  --surface:#fcfcfb; --plane:#f4f5f7;
+  --ink:#0b0b0b; --ink-2:#52514e; --ink-muted:#898781;
+  --grid:#e1e0d9; --axis:#c3c2b7; --hair:rgba(11,11,11,0.10);
+  /* diverging: promoter (blue) <-> detractor (red), neutral midpoint */
+  --promoter:#2a78d6; --passive:#b8b7b0; --detractor:#d03b3b;
+  /* status (fixed, never themed) */
+  --good:#0ca30c; --warning:#fab219; --serious:#ec835a; --critical:#d03b3b;
+  --good-ink:#006300; --bad-ink:#a52121;
+  /* sequential blue ramp */
+  --b100:#cde2fb; --b200:#9ec5f4; --b300:#6da7ec; --b450:#2a78d6; --b550:#1c5cab; --b650:#104281;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
+  background:var(--plane); color:var(--ink); font-size:14px; line-height:1.55;
+  font-variant-numeric:tabular-nums;
+  touch-action:manipulation;
+  -webkit-tap-highlight-color:rgba(21,101,192,0.15);
+}
+a{color:var(--brand)}
+.wrap{max-width:1560px;margin:0 auto}
+h1,h2,h3{text-wrap:balance}
+
+/* One focus treatment for every interactive element. */
+:where(button,select,a,[tabindex]):focus-visible{
+  outline:2px solid var(--brand); outline-offset:2px; border-radius:3px;
+}
+
+/* ---------- toolbar ---------- */
+.toolbar{background:var(--surface);border-bottom:1px solid var(--hair);position:sticky;top:0;z-index:60;
+  box-shadow:0 1px 6px rgba(11,11,11,0.06)}
+.toolbar-inner{display:flex;align-items:flex-end;gap:12px;padding:10px 28px;flex-wrap:wrap;max-width:1560px;margin:0 auto}
+.fg{display:flex;flex-direction:column;gap:3px}
+.fg label{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-muted)}
+.fg select{font:inherit;font-size:12.5px;padding:6px 9px;border-radius:4px;border:1px solid var(--axis);
+  background:var(--surface);color:var(--ink);min-width:132px;cursor:pointer}
+.spacer{flex:1}
+.btn{font:inherit;font-size:12px;font-weight:650;border-radius:4px;padding:8px 14px;cursor:pointer;
+  border:1px solid var(--axis);background:var(--surface);color:var(--ink-2);white-space:nowrap}
+.btn:hover{background:var(--plane);border-color:var(--ink-muted);color:var(--ink)}
+.btn-primary{background:var(--brand);color:#fff;border-color:var(--brand)}
+.btn-primary:hover{background:#0f4a90;border-color:#0f4a90;color:#fff}
+.freshness{font-size:11px;color:var(--ink-muted);text-align:right;line-height:1.35}
+.freshness b{color:var(--ink-2)}
+
+/* ---------- header ---------- */
+.header{background:var(--navy);padding:20px 28px;color:#fff}
+.header-inner{display:flex;align-items:center;justify-content:space-between;gap:20px;max-width:1560px;margin:0 auto;flex-wrap:wrap}
+.header img{height:46px;width:auto;background:#fff;padding:5px 9px;border-radius:4px}
+.header h1{font-size:19px;font-weight:650;letter-spacing:.01em}
+.header .sub{font-size:11.5px;color:#9fc2ea;text-transform:uppercase;letter-spacing:.09em;margin-top:2px}
+.header .period{text-align:right;font-size:12px;color:#9fc2ea}
+.header .period b{display:block;font-size:16px;color:#fff;font-weight:650}
+
+/* ---------- sections ---------- */
+.section{padding:22px 28px}
+.section-head{display:flex;align-items:baseline;gap:12px;margin-bottom:4px;flex-wrap:wrap}
+h2{font-size:15.5px;font-weight:700;letter-spacing:-.01em}
+.section-note{font-size:12px;color:var(--ink-2);margin-bottom:14px;max-width:96ch}
+.card{background:var(--surface);border:1px solid var(--hair);border-radius:6px;padding:16px 18px}
+.card h3{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-2);margin-bottom:3px}
+.card .h3note{font-size:11.5px;color:var(--ink-muted);margin-bottom:12px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.grid-4060{display:grid;grid-template-columns:38fr 62fr;gap:16px}
+.grid-6040{display:grid;grid-template-columns:62fr 38fr;gap:16px}
+@media(max-width:1080px){.grid2,.grid3,.grid-4060,.grid-6040{grid-template-columns:1fr}}
+
+/* ---------- alerts ---------- */
+.alerts{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px}
+.alert{background:var(--surface);border:1px solid var(--hair);border-left:4px solid var(--axis);
+  border-radius:5px;padding:12px 14px;min-width:0}
+.alert.critical{border-left-color:var(--critical)}
+.alert.warning{border-left-color:var(--warning)}
+.alert.good{border-left-color:var(--good)}
+.alert .sev{display:inline-block;font-size:9.5px;font-weight:700;letter-spacing:.09em;
+  text-transform:uppercase;padding:2px 6px;border-radius:3px;margin-bottom:7px;
+  background:var(--plane);color:var(--ink-2);border:1px solid var(--hair)}
+.alert.critical .sev{background:#fbe3e3;color:#8c2626;border-color:#eec2c2}
+.alert.warning .sev{background:#fff4d8;color:#7a5600;border-color:#f0dda8}
+.alert.good .sev{background:#e2f5e2;color:#116611;border-color:#bde5bd}
+.alert .t{font-size:12.5px;font-weight:700;margin-bottom:3px;overflow-wrap:break-word}
+.alert .d{font-size:12px;color:var(--ink-2);overflow-wrap:break-word}
+
+/* ---------- KPI ---------- */
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+@media(max-width:1180px){.kpis{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:620px){.kpis{grid-template-columns:1fr}}
+.kpi{background:var(--surface);border:1px solid var(--hair);border-radius:6px;padding:14px 15px}
+.kpi .lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--ink-muted)}
+.kpi .val{font-size:30px;font-weight:680;line-height:1.08;margin-top:5px;letter-spacing:-.02em}
+.kpi .sub{font-size:11.5px;color:var(--ink-2);margin-top:3px}
+.delta{display:inline-flex;align-items:center;gap:3px;font-size:11.5px;font-weight:700;margin-top:5px}
+.delta.up{color:var(--good-ink)} .delta.down{color:var(--bad-ink)} .delta.flat{color:var(--ink-muted)}
+
+/* ---------- NPS hero ---------- */
+.hero{display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px 0 2px}
+.hero .num{font-size:66px;font-weight:700;line-height:1;letter-spacing:-.03em}
+.hero .cap{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-muted)}
+.stackbar{width:100%;display:flex;height:16px;border-radius:3px;overflow:hidden;margin:14px 0 8px;gap:2px;background:var(--plane)}
+.stackbar span{display:block;height:100%}
+.legend{width:100%;display:flex;gap:14px;flex-wrap:wrap;font-size:11.5px;color:var(--ink-2)}
+.legend i{width:9px;height:9px;border-radius:2px;display:inline-block;margin-right:5px}
+.npsboxes{width:100%;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.npsbox{text-align:center;padding:9px 4px;border-radius:4px;background:var(--plane);border:1px solid var(--hair)}
+.npsbox .n{font-size:21px;font-weight:680;line-height:1.1}
+.npsbox .l{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-muted);margin-top:2px}
+.target-note{font-size:11.5px;color:var(--ink-2);margin-top:12px;text-align:left;width:100%;
+  border-top:1px solid var(--grid);padding-top:12px}
+.provenance{font-size:11px;color:var(--ink-muted);margin-top:8px;font-style:normal}
+
+/* ---------- tables ---------- */
+.tablewrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+th{text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;
+  color:var(--ink-muted);padding:7px 9px;border-bottom:1.5px solid var(--axis);vertical-align:bottom}
+th.num{text-align:right}
+.sortbtn{font:inherit;font-size:inherit;font-weight:inherit;letter-spacing:inherit;text-transform:inherit;
+  color:inherit;background:none;border:0;padding:0;cursor:pointer;text-align:inherit;display:inline;
+  white-space:normal}
+th{max-width:130px}
+.sortbtn:hover{color:var(--ink);text-decoration:underline;text-underline-offset:3px}
+.sortbtn.sorted{color:var(--brand)}
+.sortarrow{margin-left:3px}
+td{padding:8px 9px;border-bottom:1px solid var(--grid);vertical-align:middle}
+tbody tr:hover{background:var(--plane)}
+td.num,th.num{text-align:right}
+.sitename{font-weight:650}
+.flag{display:inline-block;font-size:9.5px;font-weight:700;padding:1px 6px;border-radius:3px;margin-left:6px;
+  background:var(--plane);color:var(--ink-muted);border:1px solid var(--hair);vertical-align:middle}
+.flag.warn{background:#fff4d8;color:#7a5600;border-color:#f0dda8}
+.flag.bad{background:#fbe3e3;color:#8c2626;border-color:#f0c0c0}
+.flag.ok{background:#e2f5e2;color:#116611;border-color:#bde5bd}
+.npsval{font-weight:700}
+.npsval.pos{color:var(--good-ink)} .npsval.neg{color:var(--bad-ink)}
+.minibar{display:flex;height:9px;border-radius:2px;overflow:hidden;gap:1.5px;min-width:112px;background:var(--plane)}
+.minibar span{display:block;height:100%}
+.barcell{position:relative;min-width:130px}
+.bartrack{height:9px;background:var(--plane);border-radius:2px;overflow:hidden}
+.barfill{height:100%;border-radius:2px}
+
+/* ---------- heatmap ---------- */
+.heat{border-collapse:separate;border-spacing:3px;font-size:11.5px}
+.heat th,.heat td{border:0;max-width:none}
+/* Column headings: site names, read normally, wrapping onto a second line. */
+.heat thead th.sitecol{padding:0 4px 6px;font-size:10.5px;font-weight:650;color:var(--ink-2);
+  text-transform:none;letter-spacing:0;text-align:center;vertical-align:bottom;
+  white-space:normal;width:96px;min-width:96px;line-height:1.25;border-bottom:1px solid var(--grid)}
+.heat thead th.sitecol .sitecount{display:block;font-size:9.5px;font-weight:400;color:var(--ink-muted);margin-top:2px}
+/* Row headings: the long service names, so they get the horizontal space. */
+.heat th.rowlbl{font-weight:650;text-align:left;padding:6px 12px 6px 2px;font-size:12px;
+  text-transform:none;letter-spacing:0;color:var(--ink);white-space:normal;
+  min-width:186px;vertical-align:middle;border-bottom:0}
+.heat th.rowlbl .rowgroup{display:block;font-size:10px;font-weight:400;color:var(--ink-muted);margin-top:1px}
+.heat thead th.rowlbl{border-bottom:1px solid var(--grid);vertical-align:bottom;font-size:10px;
+  text-transform:uppercase;letter-spacing:.06em;color:var(--ink-muted);font-weight:700}
+.heat td{padding:0}
+.heat .cell{border-radius:2px;text-align:center;padding:7px 4px;font-weight:650;line-height:1.25}
+.heat .cellbase{font-size:9.5px;font-weight:500;opacity:.75;letter-spacing:-.01em}
+
+/* ---------- verbatims ---------- */
+.vfilters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.chip{font:inherit;font-size:11.5px;padding:5px 11px;border-radius:4px;border:1px solid var(--axis);
+  background:var(--surface);color:var(--ink-2);cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--navy);color:#fff;border-color:var(--navy)}
+.vlist{max-height:560px;overflow-y:auto;display:flex;flex-direction:column;gap:10px;padding-right:4px}
+.v{border:1px solid var(--hair);border-left:3px solid var(--axis);border-radius:5px;
+  contain-intrinsic-size:auto 120px;content-visibility:auto;padding:11px 13px;background:var(--surface)}
+.v.detractor{border-left-color:var(--detractor)}
+.v.passive{border-left-color:var(--passive)}
+.v.promoter{border-left-color:var(--promoter)}
+.v .vhead{display:flex;gap:7px;align-items:center;flex-wrap:wrap;margin-bottom:6px}
+.tag{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:2px 7px;
+  border-radius:3px;background:var(--plane);color:var(--ink-2);border:1px solid var(--hair)}
+.tag.score{background:var(--navy);color:#fff;border-color:var(--navy)}
+.v .vtext{font-size:12.8px;color:var(--ink);line-height:1.5}
+.v .vtext + .vtext{margin-top:6px;padding-top:6px;border-top:1px dashed var(--grid)}
+.v .vtext .k{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-muted);margin-right:6px}
+.v .vmeta{font-size:11px;color:var(--ink-muted);margin-top:7px}
+
+/* ---------- recommendations ---------- */
+.recs{display:flex;flex-direction:column;gap:11px}
+.rec{display:flex;gap:14px;background:var(--surface);border:1px solid var(--hair);border-radius:6px;padding:14px 16px}
+.rec .n{font-size:19px;font-weight:700;color:var(--b200);line-height:1;min-width:30px}
+.rec .t{font-size:13.5px;font-weight:700;margin-bottom:3px}
+.rec .d{font-size:12.5px;color:var(--ink-2)}
+.rec .who{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--brand);margin-top:6px}
+
+/* ---------- misc ---------- */
+.empty{font-size:12.5px;color:var(--ink-muted);padding:14px 2px}
+.worked{margin-top:16px;padding:13px 15px;background:var(--plane);border:1px solid var(--hair);
+  border-radius:5px;font-size:12.5px;color:var(--ink-2);line-height:1.6;max-width:105ch}
+.worked b{color:var(--ink)}
+.method{font-size:12px;color:var(--ink-2);line-height:1.65}
+.method dt{font-weight:700;color:var(--ink);margin-top:9px;font-size:12px}
+.method dd{margin-left:0}
+footer{padding:20px 28px 40px;font-size:11.5px;color:var(--ink-muted);border-top:1px solid var(--hair);margin-top:14px}
+.chartbox{position:relative}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+@media print{
+  .toolbar,.vfilters,.btn{display:none!important}
+  body{background:#fff;font-size:11px}
+  .section{padding:12px 16px;break-inside:avoid}
+  .card,.kpi,.alert,.rec{break-inside:avoid;box-shadow:none}
+  .vlist{max-height:none;overflow:visible}
+  .header{background:var(--navy)!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="toolbar-inner">
+    <div class="fg"><label for="fPreset">Period</label><select id="fPreset"></select></div>
+    <div class="fg"><label for="fYear">Year</label><select id="fYear"></select></div>
+    <div class="fg"><label for="fQuarter">Quarter</label><select id="fQuarter"></select></div>
+    <div class="fg"><label for="fMonth">Month</label><select id="fMonth"></select></div>
+    <div class="fg"><label for="fRegion">Region</label><select id="fRegion"></select></div>
+    <div class="fg"><label for="fSite">Site</label><select id="fSite"></select></div>
+    <div class="fg"><label for="fCat">Client type</label><select id="fCat"></select></div>
+    <button class="btn" id="btnReset" type="button">Reset</button>
+    <div class="spacer"></div>
+    <div class="freshness" id="freshness"></div>
+    <button class="btn" id="btnCsv" type="button">Export CSV</button>
+    <button class="btn btn-primary" id="btnPrint" type="button">Print / PDF</button>
+  </div>
+</div>
+
+<div class="header">
+  <div class="header-inner">
+    <div style="display:flex;align-items:center;gap:16px">
+      <img id="logo" alt="" hidden>
+      <div>
+        <h1>Customer Experience &amp; NPS Dashboard</h1>
+        <div class="sub">Demo Diagnostics (fictional) · synthetic data · All sites</div>
+      </div>
+    </div>
+    <div class="period"><b id="periodLabel">&nbsp;</b><span id="periodMeta"></span></div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <p class="sr" id="liveStatus" role="status" aria-live="polite"></p>
+
+  <div class="section">
+    <div class="section-head"><h2>What Needs Attention Right Now</h2></div>
+    <div class="section-note">Written automatically from the period you have selected. Every card states the number it is based on, so you can check it against the tables below.</div>
+    <div class="alerts" id="alerts"></div>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><h2>Headline Numbers</h2></div>
+    <div class="section-note" id="kpiNote"></div>
+    <div class="kpis" id="kpis"></div>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><h2>Net Promoter Score</h2></div>
+    <div class="section-note">NPS = % Promoters (score 9–10) minus % Detractors (0–6). Passives (7–8) count in the base but not the score. Range −100 to +100.</div>
+    <div class="grid-4060">
+      <div class="card">
+        <h3>Overall NPS</h3>
+        <div class="h3note" id="npsBase"></div>
+        <div class="hero">
+          <div class="num" id="npsBig">&nbsp;</div>
+          <div class="cap">Net Promoter Score</div>
+          <div class="stackbar" id="npsBar" role="img" aria-label="NPS distribution"></div>
+          <div class="legend">
+            <span><i style="background:var(--promoter)"></i>Promoters 9–10</span>
+            <span><i style="background:var(--passive)"></i>Passives 7–8</span>
+            <span><i style="background:var(--detractor)"></i>Detractors 0–6</span>
+          </div>
+          <div class="npsboxes" id="npsBoxes"></div>
+          <div class="target-note" id="targetNote"></div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>NPS By Month</h3>
+        <div class="h3note">Hollow points are months with too few responses to be reliable. Response volume is charted separately underneath. The two are never put on one pair of axes.</div>
+        <div class="chartbox" style="height:214px"><canvas id="trendNps"></canvas></div>
+        <div class="chartbox" style="height:104px;margin-top:6px"><canvas id="trendVol"></canvas></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><h2>Site League Table</h2></div>
+    <div class="section-note">Sorted by how many responses each site received. Click any column heading to re-sort. The change column compares this period against the period of the same length immediately before it. Sites with too few responses to be reliable are marked, and their score should be read as a rough indication only.</div>
+    <div class="card"><div class="tablewrap"><table id="siteTable"></table></div></div>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><h2>What Should We Fix First</h2></div>
+    <div class="section-note">
+      <p>This table ranks every part of our service by how much fixing it would improve our score. The last column
+      is the one to act on: it estimates how many points we would win back if nobody were unhappy with that part
+      of the service any more. Bigger number, bigger prize.</p>
+      <p style="margin-top:8px">Anyone who answered "Not applicable" is left out completely. If you never used the
+      courier service, your opinion of it is not counted for us or against us.</p>
+    </div>
+    <div class="card">
+      <div class="tablewrap"><table id="driverTable"></table></div>
+      <div class="worked" id="driverExample"></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><h2>Which Site Has Which Problem</h2></div>
+    <div class="section-note">
+      <p>Each row is a part of our service and each column is a site. Every cell answers one question on its own:
+      <b>of the people at that site who actually used that service, what share said they were not satisfied?</b>
+      Darker means worse, and the worst services are at the top. The small figure inside each cell is the count it
+      comes from.</p>
+      <p style="margin-top:8px"><b>The numbers are not meant to add up to 100% in any direction.</b> They are not
+      slices of one pie. Every cell has its own separate group of people, because different customers use different
+      services. At Victoria Island, for example, nearly everyone has a view on urgent results, but only the customers
+      who had a sample collected by courier can rate the courier. So each cell is a percentage of the people in that
+      one cell, never of the site's total responses. The response count under each site name is the site total, and
+      it is there for context only.</p>
+      <p style="margin-top:8px">A blank cell means fewer than 5 people at that site used that service, which is too
+      few to put a number on.</p>
+    </div>
+    <div class="card"><div class="tablewrap" id="heatWrap"></div></div>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><h2>Who Is Unhappy</h2></div>
+    <div class="section-note">NPS by segment, not headcount by segment. A segment's bar tells you where it sits between −100 and +100; the number in brackets is its base size.</div>
+    <div class="grid2">
+      <div class="card"><h3>Client Type</h3><div class="h3note">"External (location-based)" means a hospital, clinic or corporate that sends samples to us. "Walk-in" means a person who came to the lab themselves.</div><div id="segCat"></div></div>
+      <div class="card"><h3>Region</h3><div class="h3note">Site-level detail is in the league table above.</div><div id="segRegion"></div></div>
+      <div class="card"><h3>Age Range</h3><div class="h3note"></div><div id="segAge"></div></div>
+      <div class="card"><h3>Complaint Handling</h3><div class="h3note">Whether the customer felt their complaint was adequately addressed. This is the sharpest split anywhere in the data.</div><div id="segAddressed"></div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><h2>What Customers Actually Wrote</h2></div>
+    <div class="section-note">
+      Every written answer is read: both the complaint box <i>and</i> the suggestions box, which is where most
+      written feedback actually lands. Non-answers ("Nil", "N/A", a bare email address) are filtered out.
+      One comment can carry more than one theme, so theme mentions add up to more than the comment count.
+    </div>
+    <div class="grid-4060">
+      <div class="card">
+        <h3>Themes Mentioned</h3>
+        <div class="h3note" id="themeNote"></div>
+        <div id="themeBars"></div>
+      </div>
+      <div class="card">
+        <h3>Comments</h3>
+        <div class="h3note">Most recent first. Filter by band or theme.</div>
+        <div class="vfilters" id="vFilters"></div>
+        <div class="vlist" id="vList"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><h2>Who To Call Back</h2></div>
+    <div class="section-note" id="recoveryNote"></div>
+    <div class="card"><div class="tablewrap"><table id="recoveryTable"></table></div></div>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><h2>Referring Accounts At Risk</h2></div>
+    <div class="section-note">Hospitals, clinics and corporates that named themselves on the form and returned more than one response. A poor score here puts a whole referral stream at risk, not one visit, so it is worth more attention than a single unhappy walk-in.</div>
+    <div class="card"><div class="tablewrap"><table id="accountTable"></table></div></div>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><h2>Recommended Actions</h2></div>
+    <div class="section-note">Generated from the numbers on this page for the selected period. Each one names the owner and the figure it is based on.</div>
+    <div class="recs" id="recs"></div>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><h2>Data Quality &amp; Method</h2></div>
+    <div class="section-note">Shown so that anyone reading the dashboard can see what was cleaned and what remains uncertain.</div>
+    <div class="grid2">
+      <div class="card"><h3>This Build</h3><div class="h3note"></div><dl class="method" id="dqBuild"></dl></div>
+      <div class="card"><h3>How The Numbers Are Calculated</h3><div class="h3note"></div><dl class="method" id="dqMethod"></dl></div>
+    </div>
+  </div>
+
+  <footer id="footer"></footer>
+</div>
+
+<script id="payload" type="application/json">/*__PAYLOAD__*/null</script>
+<script>
+"use strict";
+/* ==========================================================================
+   Customer-experience dashboard: view layer.
+   All cleaning/derivation happens in the ETL (etl/build.js); this file only
+   filters, aggregates and renders.
+   ========================================================================== */
+
+const PAYLOAD = JSON.parse(document.getElementById('payload').textContent);
+const RECORDS = PAYLOAD.records;
+const TOUCHPOINTS = PAYLOAD.config.touchpoints;
+const THEMES = PAYLOAD.config.themes;
+const TH = PAYLOAD.config.thresholds;
+const META = PAYLOAD.meta;
+
+const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const DAY = 86400000;
+const SAT = 'Satisfied', UNSAT = 'Not satisfied';
+
+document.getElementById('logo').src = "__LOGO__";
+
+/* ---------------------------------------------------------------- helpers */
+const $ = id => document.getElementById(id);
+const esc = s => String(s == null ? '' : s)
+  .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const pct1 = x => (Math.round(x*10)/10).toFixed(1);
+const signed = x => (x > 0 ? '+' : '') + x;
+const dataMaxTs = RECORDS.length ? Math.max(...RECORDS.map(r => r.ts)) : Date.now();
+const dataMinTs = RECORDS.length ? Math.min(...RECORDS.map(r => r.ts)) : Date.now();
+const fmtDate = ts => new Date(ts).toISOString().slice(0,10);
+
+function npsStats(rows){
+  const scored = rows.filter(r => r.nps !== null);
+  const n = scored.length;
+  const p = scored.filter(r => r.band === 'Promoter').length;
+  const pa = scored.filter(r => r.band === 'Passive').length;
+  const d = scored.filter(r => r.band === 'Detractor').length;
+  return { n, p, pa, d,
+    pPct: n ? p/n*100 : 0, paPct: n ? pa/n*100 : 0, dPct: n ? d/n*100 : 0,
+    nps: n ? Math.round((p - d)/n*100) : null };
+}
+
+function satStats(rows, key){
+  let sat = 0, unsat = 0;
+  for (const r of rows){
+    if (r[key] === SAT) sat++;
+    else if (r[key] === UNSAT) unsat++;
+  }
+  const app = sat + unsat;
+  return { sat, unsat, app, pct: app ? sat/app*100 : null };
+}
+
+/* Overall satisfaction: every rating anyone gave, across all parts of the
+   service, pooled. This is a true percentage on a 0 to 100 scale, and it is
+   the measure a "90% target" almost certainly refers to. It is a different
+   thing from NPS and the two are not comparable. */
+function overallSatisfaction(rows){
+  let sat = 0, unsat = 0;
+  for (const t of TOUCHPOINTS){
+    for (const r of rows){
+      if (r[t.key] === SAT) sat++;
+      else if (r[t.key] === UNSAT) unsat++;
+    }
+  }
+  const app = sat + unsat;
+  return { sat, unsat, app, pct: app ? sat/app*100 : null };
+}
+
+function groupBy(rows, keyFn){
+  const m = new Map();
+  for (const r of rows){
+    const k = keyFn(r);
+    if (k === null || k === undefined) continue;
+    if (!m.has(k)) m.set(k, []);
+    m.get(k).push(r);
+  }
+  return m;
+}
+
+/* Screen-reader announcement for changes that happen without a page load. */
+let announceTimer = null;
+function announce(msg){
+  clearTimeout(announceTimer);
+  announceTimer = setTimeout(() => { $('liveStatus').textContent = msg; }, 250);
+}
+
+/* ---------------------------------------------------------------- filters */
+const PRESETS = [
+  { id:'90',   label:'Last 90 days' },
+  { id:'180',  label:'Last 6 months' },
+  { id:'365',  label:'Last 12 months' },
+  { id:'ytd',  label:'Year to date' },
+  { id:'all',  label:'All time' }
+];
+
+function currentWindow(){
+  const p = $('fPreset').value;
+  const y = $('fYear').value, q = $('fQuarter').value, m = $('fMonth').value;
+
+  // An explicit year/quarter/month selection always wins over the preset.
+  if (y !== 'all'){
+    const yr = Number(y);
+    let from = new Date(yr,0,1), to = new Date(yr,11,31,23,59,59);
+    if (q !== 'all'){ const qi = Number(q)-1; from = new Date(yr,qi*3,1); to = new Date(yr,qi*3+3,0,23,59,59); }
+    if (m !== 'all'){ const mi = Number(m)-1; from = new Date(yr,mi,1); to = new Date(yr,mi+1,0,23,59,59); }
+    return { from:from.getTime(), to:to.getTime(), comparable:true };
+  }
+  if (p === 'all') return { from:dataMinTs, to:dataMaxTs, comparable:false };
+  if (p === 'ytd'){
+    const yr = new Date(dataMaxTs).getFullYear();
+    return { from:new Date(yr,0,1).getTime(), to:dataMaxTs, comparable:true };
+  }
+  const days = Number(p);
+  return { from: dataMaxTs - days*DAY, to: dataMaxTs, comparable:true };
+}
+
+function dimFilter(rows){
+  const region = $('fRegion').value, site = $('fSite').value, cat = $('fCat').value;
+  return rows.filter(r =>
+    (region === 'all' || r.region === region) &&
+    (site   === 'all' || r.site   === site) &&
+    (cat    === 'all' || r.clientCategory === cat));
+}
+
+function getScope(){
+  const w = currentWindow();
+  const inWindow = RECORDS.filter(r => r.ts >= w.from && r.ts <= w.to);
+  const rows = dimFilter(inWindow);
+  let prev = [];
+  if (w.comparable){
+    const span = w.to - w.from;
+    const pFrom = w.from - span - 1, pTo = w.from - 1;
+    prev = dimFilter(RECORDS.filter(r => r.ts >= pFrom && r.ts <= pTo));
+  }
+  return { rows, prev, window:w };
+}
+
+function buildFilters(){
+  $('fPreset').innerHTML = PRESETS.map(p =>
+    `<option value="${p.id}"${p.id==='365'?' selected':''}>${p.label}</option>`).join('');
+
+  const years = [...new Set(RECORDS.map(r => r.year))].sort((a,b)=>b-a);
+  $('fYear').innerHTML = '<option value="all">All years</option>' +
+    years.map(y => `<option value="${y}">${y}</option>`).join('');
+  $('fQuarter').innerHTML = '<option value="all">All quarters</option>' +
+    [1,2,3,4].map(q => `<option value="${q}">Q${q}</option>`).join('');
+  $('fMonth').innerHTML = '<option value="all">All months</option>' +
+    MONTHS.map((m,i) => `<option value="${i+1}">${m}</option>`).join('');
+
+  const regions = [...new Set(RECORDS.map(r => r.region))].sort();
+  $('fRegion').innerHTML = '<option value="all">All regions</option>' +
+    regions.map(v => `<option value="${esc(v)}">${esc(v)}</option>`).join('');
+  const sites = [...new Set(RECORDS.map(r => r.site))].sort();
+  $('fSite').innerHTML = '<option value="all">All sites</option>' +
+    sites.map(v => `<option value="${esc(v)}">${esc(v)}</option>`).join('');
+  const cats = [...new Set(RECORDS.map(r => r.clientCategory))].sort();
+  $('fCat').innerHTML = '<option value="all">All client types</option>' +
+    cats.map(v => `<option value="${esc(v)}">${esc(v)}</option>`).join('');
+}
+
+/* ================================================================ RENDERERS */
+let charts = {};
+let siteSort = { key:'n', dir:'desc' };
+let vFilter = { band:'all', theme:'all' };
+
+function render(){
+  const scope = getScope();
+  renderPeriod(scope);
+  renderAlerts(scope);
+  renderKpis(scope);
+  renderNps(scope);
+  renderTrend(scope);
+  renderSiteTable(scope);
+  renderDrivers(scope);
+  renderHeatmap(scope);
+  renderSegments(scope);
+  renderVoice(scope);
+  renderRecovery(scope);
+  renderAccounts(scope);
+  renderRecs(scope);
+  renderMeta(scope);
+}
+
+/* ---------- period + freshness ---------- */
+function renderPeriod({ rows, window:w }){
+  const presetLabel = ($('fYear').value !== 'all')
+    ? [$('fYear').value,
+       $('fQuarter').value !== 'all' ? 'Q'+$('fQuarter').value : null,
+       $('fMonth').value !== 'all' ? MONTHS[Number($('fMonth').value)-1] : null].filter(Boolean).join(' · ')
+    : (PRESETS.find(p => p.id === $('fPreset').value) || {}).label;
+  const dims = [$('fRegion').value, $('fSite').value, $('fCat').value].filter(v => v !== 'all');
+  $('periodLabel').textContent = presetLabel + (dims.length ? ' · ' + dims.join(' · ') : '');
+  $('periodMeta').textContent = `${fmtDate(w.from)} to ${fmtDate(w.to)} · ${rows.length} responses`;
+
+  const built = new Date(META.builtAt);
+  const ageH = Math.floor((Date.now() - built.getTime())/3600000);
+  const ageTxt = ageH < 1 ? 'just now' : ageH < 48 ? `${ageH}h ago` : `${Math.floor(ageH/24)} days ago`;
+  $('freshness').innerHTML =
+    `Data refreshed <b>${ageTxt}</b><br>${esc(META.loadedRows)} responses to ${esc(META.dateTo)}`;
+}
+
+/* ---------- alerts ---------- */
+function renderAlerts({ rows, prev, window:w }){
+  const a = [];
+  const cur = npsStats(rows), pre = npsStats(prev);
+
+  if (cur.n < 10){
+    a.push({ lvl:'warning', t:'Too few responses to read confidently',
+      d:`Only ${cur.n} scored response${cur.n===1?'':'s'} in this period. Widen the period before drawing conclusions.` });
+  }
+
+  if (w.comparable && cur.nps !== null && pre.nps !== null && pre.n >= 10 && cur.n >= 10){
+    const d = cur.nps - pre.nps;
+    if (Math.abs(d) >= 5){
+      a.push({ lvl: d < 0 ? 'critical' : 'good',
+        t:`NPS ${d < 0 ? 'fell' : 'rose'} ${Math.abs(d)} points`,
+        d:`${cur.nps} this period against ${pre.nps} in the preceding ${Math.round((w.to-w.from)/DAY)} days (n=${cur.n} vs ${pre.n}).` });
+    }
+  }
+
+  if (w.comparable && prev.length >= 10){
+    const drop = (prev.length - rows.length)/prev.length*100;
+    if (drop >= 30) a.push({ lvl:'warning', t:`Feedback volume down ${Math.round(drop)}%`,
+      d:`${rows.length} responses against ${prev.length} in the preceding period. Fewer responses means every other number on this page is less reliable. Check that the survey link is still being sent out.` });
+  }
+
+  // Worst site with a defensible sample
+  const sites = [...groupBy(rows, r => r.site)]
+    .map(([name, rs]) => ({ name, n: rs.length, ...npsStats(rs) }))
+    .filter(s => s.n >= TH.minSampleForRanking);
+  if (sites.length){
+    const worst = sites.slice().sort((x,y) => x.nps - y.nps)[0];
+    if (worst.nps < TH.npsWatch){
+      a.push({ lvl: worst.nps < 0 ? 'critical' : 'warning',
+        t:`${worst.name} is the weakest site`,
+        d:`NPS ${worst.nps} across ${worst.n} responses, with ${worst.d} detractors against ${worst.p} promoters. ${cur.nps !== null ? `The all-site figure is ${cur.nps}.` : ''}` });
+    }
+    const best = sites.slice().sort((x,y) => y.nps - x.nps)[0];
+    if (best.nps >= TH.npsTarget){
+      a.push({ lvl:'good', t:`${best.name} is above target`,
+        d:`NPS ${best.nps} across ${best.n} responses, against a target of ${TH.npsTarget}. Worth documenting what they do differently.` });
+    }
+  }
+
+  // Biggest lever
+  const drivers = driverStats(rows).filter(d => d.app >= 20);
+  if (drivers.length){
+    const top = drivers[0];
+    a.push({ lvl:'warning', t:`${top.label} is where the most points are`,
+      d:`${top.unsat} of ${top.app} applicable respondents were dissatisfied (${pct1(100-top.pct)}%). Their NPS is ${top.npsUnsat} against ${top.npsSat} for those who were satisfied.` });
+  }
+
+  // Overdue recovery
+  const overdue = recoveryQueue(rows).filter(r => r.ageDays > TH.recoverySlaDays && r.contactRequested === 'Yes');
+  if (overdue.length){
+    a.push({ lvl:'critical', t:`${overdue.length} detractor${overdue.length===1?'':'s'} asked to be contacted more than ${TH.recoverySlaDays} days ago and have not been called back`,
+      d:`The longest wait is ${Math.max(...overdue.map(r=>r.ageDays))} days. Full contact details are in the daily service-recovery export.` });
+  }
+
+  if (!a.length) a.push({ lvl:'good', t:'Nothing has crossed a threshold this period',
+    d:'NPS is stable, no site is below the watch level, and nobody is waiting too long for a callback.' });
+
+  const SEVERITY = { critical:'Act now', warning:'Watch', good:'On track' };
+  $('alerts').innerHTML = a.slice(0,6).map(x =>
+    `<div class="alert ${x.lvl}">
+       <span class="sev">${SEVERITY[x.lvl] || 'Note'}</span>
+       <div class="t">${esc(x.t)}</div>
+       <div class="d">${esc(x.d)}</div>
+     </div>`).join('');
+}
+
+/* ---------- KPIs ---------- */
+function deltaHtml(cur, prev, unit, invert){
+  if (cur === null || prev === null || prev === undefined) return '<div class="delta flat">no comparable prior period</div>';
+  const d = Math.round((cur - prev)*10)/10;
+  const good = invert ? d < 0 : d > 0;
+  const cls = d === 0 ? 'flat' : good ? 'up' : 'down';
+  const arrow = d === 0 ? '–' : d > 0 ? '▲' : '▼';
+  return `<div class="delta ${cls}">${arrow} ${signed(d)}${unit} vs prior period</div>`;
+}
+
+function renderKpis({ rows, prev, window:w }){
+  const c = npsStats(rows), p = npsStats(prev);
+  const comparable = w.comparable && prev.length > 0;
+
+  const addressed = rows.filter(r => r.complaintsAddressed);
+  const addrYes = addressed.filter(r => r.complaintsAddressed === 'Yes').length;
+  const addrPct = addressed.length ? addrYes/addressed.length*100 : null;
+  const prevAddressed = prev.filter(r => r.complaintsAddressed);
+  const prevAddrPct = prevAddressed.length
+    ? prevAddressed.filter(r => r.complaintsAddressed === 'Yes').length/prevAddressed.length*100 : null;
+
+  const unresolved = rows.filter(r => r.complaintsAddressed === 'No').length;
+  const queue = recoveryQueue(rows);
+  const withVerbatim = rows.filter(r => r.hasVerbatim).length;
+
+  $('kpiNote').textContent = comparable
+    ? `Each "vs prior period" figure compares this period against the ${Math.round((w.to-w.from)/DAY)} days immediately before it, with the same site and client filters applied. "pp" means percentage points.`
+    : 'This selection has no comparable period before it, so no comparisons are shown.';
+
+  const sat = overallSatisfaction(rows);
+  const prevSat = overallSatisfaction(prev);
+
+  const cards = [
+    { lbl:'NPS', val: c.nps === null ? '&mdash;' : c.nps,
+      sub: `Scale &minus;100 to +100. Not a percentage. ${c.n} scored responses.`,
+      delta: comparable ? deltaHtml(c.nps, p.n >= 5 ? p.nps : null, '', false) : '' },
+    { lbl:'Overall satisfaction', val: sat.pct === null ? '&mdash;' : pct1(sat.pct)+'%',
+      sub: `${sat.sat} of ${sat.app} service ratings were "Satisfied"`,
+      delta: comparable ? deltaHtml(sat.pct, prevSat.app >= 30 ? prevSat.pct : null, 'pp', false) : '' },
+    { lbl:'Responses', val: rows.length, sub: `${withVerbatim} left written feedback`,
+      delta: comparable ? deltaHtml(rows.length, prev.length, '', false) : '' },
+    { lbl:'Promoters', val: pct1(c.pPct)+'%', sub: `${c.p} people scored us 9 or 10`,
+      delta: comparable ? deltaHtml(c.pPct, p.n >= 5 ? p.pPct : null, 'pp', false) : '' },
+    { lbl:'Detractors', val: pct1(c.dPct)+'%', sub: `${c.d} people scored us 6 or below`,
+      delta: comparable ? deltaHtml(c.dPct, p.n >= 5 ? p.dPct : null, 'pp', true) : '' },
+    { lbl:'Complaint handling', val: addrPct === null ? '&mdash;' : pct1(addrPct)+'%',
+      sub: `${addrYes} of ${addressed.length} said "adequately addressed"`,
+      delta: comparable ? deltaHtml(addrPct, prevAddrPct, 'pp', false) : '' },
+    { lbl:'Unresolved', val: unresolved,
+      sub: 'said their complaint was NOT addressed', delta:'' },
+    { lbl:'Recovery queue', val: queue.length,
+      sub: `${queue.filter(r => r.contactRequested === 'Yes').length} asked to be contacted`, delta:'' }
+  ];
+  // val and sub are built above from counts and fixed strings only, never from
+  // customer-entered text, so the entities in them are meant to render.
+  $('kpis').innerHTML = cards.map(k => `
+    <div class="kpi"><div class="lbl">${esc(k.lbl)}</div><div class="val">${k.val}</div>
+      <div class="sub">${k.sub}</div>${k.delta}</div>`).join('');
+}
+
+/* ---------- NPS hero ---------- */
+function renderNps({ rows }){
+  const s = npsStats(rows);
+  const big = $('npsBig');
+  big.textContent = s.nps === null ? 'n/a' : s.nps;
+  big.style.color = s.nps === null ? 'var(--ink-muted)' : s.nps >= TH.npsTarget ? 'var(--good-ink)'
+    : s.nps >= 0 ? 'var(--promoter)' : 'var(--bad-ink)';
+  $('npsBase').textContent = `${s.n} of ${rows.length} responses carried a 0–10 score`;
+  $('npsBar').innerHTML =
+    `<span style="width:${s.pPct}%;background:var(--promoter)"></span>` +
+    `<span style="width:${s.paPct}%;background:var(--passive)"></span>` +
+    `<span style="width:${s.dPct}%;background:var(--detractor)"></span>`;
+  $('npsBoxes').innerHTML = [
+    ['Promoters', s.p, s.pPct, 'var(--promoter)'],
+    ['Passives',  s.pa, s.paPct, 'var(--ink-2)'],
+    ['Detractors',s.d, s.dPct, 'var(--detractor)']
+  ].map(([l,n,pc,col]) =>
+    `<div class="npsbox"><div class="n" style="color:${col}">${n}</div>
+     <div class="l">${l}</div><div class="l" style="letter-spacing:0">${pct1(pc)}%</div></div>`).join('');
+  const sat = overallSatisfaction(rows);
+  $('targetNote').innerHTML = s.nps === null ? '' :
+    `<div>Target on this scale is <b>${TH.npsTarget}</b>, so this period sits
+       <b>${s.nps >= TH.npsTarget ? 'at or above target' : (TH.npsTarget - s.nps) + ' points below target'}</b>.</div>
+     <div style="margin-top:8px">Separately, <b>${sat.pct === null ? 'n/a' : pct1(sat.pct) + '%'}</b> of all
+       ${sat.app} service ratings were "Satisfied", against a target of <b>${TH.satisfactionTarget}%</b>.</div>`;
+}
+
+/* ---------- trend ---------- */
+function renderTrend({ rows }){
+  const byMonth = groupBy(rows, r => r.ym);
+  const months = [...byMonth.keys()].sort();
+  const labels = months.map(m => MONTHS[Number(m.slice(5))-1] + " '" + m.slice(2,4));
+  const stats = months.map(m => npsStats(byMonth.get(m)));
+  const npsSeries = stats.map(s => s.nps);
+  const reliable = stats.map(s => s.n >= TH.minSampleForTrend);
+
+  const commonX = {
+    grid:{ color:'#e1e0d9', drawTicks:false },
+    border:{ color:'#c3c2b7' },
+    ticks:{ color:'#898781', font:{ size:10 }, maxRotation:0, autoSkipPadding:8 }
+  };
+
+  if (charts.nps) charts.nps.destroy();
+  charts.nps = new Chart($('trendNps'), {
+    type:'line',
+    data:{ labels, datasets:[{
+      label:'NPS', data:npsSeries, borderColor:'#2a78d6', borderWidth:2,
+      backgroundColor:'#2a78d6', tension:0.25, spanGaps:true,
+      pointRadius:5, pointHoverRadius:7, pointBorderWidth:2,
+      pointBackgroundColor: reliable.map(r => r ? '#2a78d6' : '#fcfcfb'),
+      pointBorderColor:'#2a78d6'
+    }]},
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      interaction:{ mode:'index', intersect:false },
+      scales:{
+        x: commonX,
+        y:{ min:-100, max:100, title:{ display:true, text:'NPS', color:'#52514e', font:{size:10.5} },
+            grid:{ color:c => c.tick.value === 0 ? '#c3c2b7' : '#e1e0d9', drawTicks:false },
+            border:{ display:false }, ticks:{ color:'#898781', font:{size:10}, stepSize:50 } }
+      },
+      plugins:{
+        legend:{ display:false },
+        tooltip:{ backgroundColor:'#0b0b0b', padding:9, titleFont:{size:11.5}, bodyFont:{size:11.5},
+          callbacks:{ label:c => {
+            const s = stats[c.dataIndex];
+            return [`NPS ${s.nps}`, `${s.n} response${s.n === 1 ? '' : 's'}` + (s.n < TH.minSampleForTrend ? ', too few to rely on' : ''),
+                    `${s.p} promoters · ${s.pa} passives · ${s.d} detractors`];
+          } } },
+        annotationTarget:true
+      }
+    },
+    plugins:[{
+      id:'annotationTarget',
+      afterDraw(chart){
+        const y = chart.scales.y, ctx = chart.ctx;
+        const yPos = y.getPixelForValue(TH.npsTarget);
+        if (yPos < chart.chartArea.top || yPos > chart.chartArea.bottom) return;
+        ctx.save();
+        ctx.strokeStyle = '#0ca30c'; ctx.setLineDash([4,4]); ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.moveTo(chart.chartArea.left, yPos); ctx.lineTo(chart.chartArea.right, yPos); ctx.stroke();
+        ctx.setLineDash([]); ctx.fillStyle = '#006300'; ctx.font = '600 10px system-ui';
+        ctx.fillText('target ' + TH.npsTarget, chart.chartArea.left + 4, yPos - 4);
+        ctx.restore();
+      }
+    }]
+  });
+
+  if (charts.vol) charts.vol.destroy();
+  charts.vol = new Chart($('trendVol'), {
+    type:'bar',
+    data:{ labels, datasets:[{ label:'Responses', data: stats.map(s => s.n),
+      backgroundColor:'#9ec5f4', borderRadius:{ topLeft:4, topRight:4 }, borderSkipped:false,
+      maxBarThickness:26 }]},
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      interaction:{ mode:'index', intersect:false },
+      scales:{
+        x:{ ...commonX, ticks:{ display:false } },
+        y:{ beginAtZero:true, title:{ display:true, text:'Responses', color:'#52514e', font:{size:10.5} },
+            grid:{ color:'#e1e0d9', drawTicks:false }, border:{ display:false },
+            ticks:{ color:'#898781', font:{size:10}, maxTicksLimit:3 } }
+      },
+      plugins:{ legend:{ display:false },
+        tooltip:{ backgroundColor:'#0b0b0b', padding:9, titleFont:{size:11.5}, bodyFont:{size:11.5} } }
+    }
+  });
+}
+
+/* ---------- site league table ---------- */
+function siteRows(rows, prev){
+  const prevBy = groupBy(prev, r => r.site);
+  return [...groupBy(rows, r => r.site)].map(([name, rs]) => {
+    const s = npsStats(rs);
+    const pv = prevBy.get(name);
+    const pStat = pv ? npsStats(pv) : null;
+    const urgent = satStats(rs, 'labUrgent');
+    // worst touchpoint at this site, by count dissatisfied
+    let worst = null;
+    for (const t of TOUCHPOINTS){
+      const st = satStats(rs, t.key);
+      if (st.app >= 5 && (!worst || st.unsat > worst.unsat)) worst = { label:t.label, ...st };
+    }
+    return { name, region: rs[0].region, n: rs.length, ...s,
+      delta: (pStat && pStat.n >= TH.minSampleForTrend && s.nps !== null) ? s.nps - pStat.nps : null,
+      prevN: pStat ? pStat.n : null,
+      urgentUnsatPct: urgent.app ? 100 - urgent.pct : null, urgentApp: urgent.app,
+      worst, reliable: rs.length >= TH.minSampleForRanking };
+  });
+}
+
+function renderSiteTable({ rows, prev }){
+  const data = siteRows(rows, prev);
+  const cols = [
+    { key:'name',  label:'Site', num:false },
+    { key:'n',     label:'Responses', num:true },
+    { key:'nps',   label:'NPS', num:true },
+    { key:'delta', label:'NPS change since the period before', num:true,
+      hint:'How much this site’s NPS has moved since the previous period of the same length. A green + means it improved.' },
+    { key:'dist',  label:'Promoters / passives / detractors', num:false, nosort:true },
+    { key:'urgentUnsatPct', label:'Not satisfied with urgent results', num:true,
+      hint:'Of the people at this site who used the urgent results service, the share who said they were not satisfied.' },
+    { key:'worst', label:'Biggest complaint here', num:false, nosort:true }
+  ];
+  const dir = siteSort.dir === 'asc' ? 1 : -1;
+  data.sort((a,b) => {
+    const k = siteSort.key;
+    const av = a[k], bv = b[k];
+    if (av === null && bv === null) return 0;
+    if (av === null) return 1;
+    if (bv === null) return -1;
+    return typeof av === 'string' ? av.localeCompare(bv)*dir : (av - bv)*dir;
+  });
+
+  // Sortable headings are real buttons so they work from the keyboard, and
+  // carry aria-sort so a screen reader announces the current order.
+  const head = `<thead><tr>${cols.map(c => {
+    const active = siteSort.key === c.key;
+    const ariaSort = c.nosort ? '' : ` aria-sort="${active ? (siteSort.dir === 'asc' ? 'ascending' : 'descending') : 'none'}"`;
+    const hint = c.hint ? ` title="${esc(c.hint)}"` : '';
+    const inner = c.nosort ? esc(c.label)
+      : `<button type="button" class="sortbtn${active ? ' sorted' : ''}" data-sort="${c.key}"${hint}>
+           ${esc(c.label)}<span class="sortarrow" aria-hidden="true">${active ? '▴▾'[siteSort.dir === 'asc' ? 0 : 1] : ''}</span></button>`;
+    return `<th class="${c.num ? 'num' : ''}"${ariaSort}>${inner}</th>`;
+  }).join('')}</tr></thead>`;
+
+  const body = data.map(d => {
+    const flag = d.reliable ? '' : `<span class="flag warn" title="Fewer than ${TH.minSampleForRanking} responses, so treat this score as a rough indication only">few responses</span>`;
+    const npsCls = d.nps === null ? '' : d.nps >= 0 ? 'pos' : 'neg';
+    const dEl = d.delta === null ? '<span style="color:var(--ink-muted)">no prior data</span>'
+      : `<span class="${d.delta>0?'npsval pos':d.delta<0?'npsval neg':''}">${signed(d.delta)}</span>`
+        + `<div style="font-size:10px;color:var(--ink-muted);font-weight:400">from ${d.prevN} before</div>`;
+    const urg = d.urgentUnsatPct === null ? '<span style="color:var(--ink-muted)">n/a</span>' : `${pct1(d.urgentUnsatPct)}%
+      <span style="color:var(--ink-muted)">of ${d.urgentApp}</span>`;
+    return `<tr>
+      <td class="sitename">${esc(d.name)}${flag}<div style="font-size:10.5px;color:var(--ink-muted);font-weight:400">${esc(d.region)}</div></td>
+      <td class="num">${d.n}</td>
+      <td class="num npsval ${npsCls}">${d.nps === null ? 'n/a' : d.nps}</td>
+      <td class="num">${dEl}</td>
+      <td><div class="minibar" title="${d.p} promoters, ${d.pa} passives, ${d.d} detractors">
+        <span style="width:${d.pPct}%;background:var(--promoter)"></span>
+        <span style="width:${d.paPct}%;background:var(--passive)"></span>
+        <span style="width:${d.dPct}%;background:var(--detractor)"></span></div>
+        <div style="font-size:10px;color:var(--ink-muted);margin-top:2px">${d.p} / ${d.pa} / ${d.d}</div></td>
+      <td class="num">${urg}</td>
+      <td style="font-size:11.5px">${d.worst ? `${esc(d.worst.label)}<div style="color:var(--ink-muted);font-size:10.5px">${d.worst.unsat} of ${d.worst.app} were not satisfied</div>` : '<span style="color:var(--ink-muted)">n/a</span>'}</td>
+    </tr>`;
+  }).join('');
+
+  $('siteTable').innerHTML = head + `<tbody>${body || '<tr><td colspan="7" class="empty">No responses in this period.</td></tr>'}</tbody>`;
+  $('siteTable').querySelectorAll('button[data-sort]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const k = btn.dataset.sort;
+      siteSort = { key:k, dir: siteSort.key === k && siteSort.dir === 'desc' ? 'asc' : 'desc' };
+      renderSiteTable({ rows, prev });
+      // Keep focus where the user left it after the table re-renders.
+      const again = $('siteTable').querySelector(`button[data-sort="${k}"]`);
+      if (again) again.focus();
+      announce(`Site table sorted by ${k}, ${siteSort.dir === 'asc' ? 'ascending' : 'descending'}.`);
+    });
+  });
+}
+
+/* ---------- drivers ---------- */
+function driverStats(rows){
+  const base = npsStats(rows);
+  return TOUCHPOINTS.map(t => {
+    const st = satStats(rows, t.key);
+    const satRows = rows.filter(r => r[t.key] === SAT);
+    const unsatRows = rows.filter(r => r[t.key] === UNSAT);
+    const nSat = npsStats(satRows), nUnsat = npsStats(unsatRows);
+    const gap = (nSat.nps !== null && nUnsat.nps !== null) ? nSat.nps - nUnsat.nps : null;
+    // Lever: NPS points recoverable if every dissatisfied respondent were moved to satisfied.
+    const lever = (gap !== null && base.n) ? gap * (st.unsat / base.n) : null;
+    return { key:t.key, label:t.label, group:t.group, ...st,
+      npsSat:nSat.nps, npsUnsat:nUnsat.nps, nSat:nSat.n, nUnsat:nUnsat.n, gap,
+      lever: lever === null ? null : Math.round(lever*10)/10 };
+  }).filter(d => d.app > 0)
+    .sort((a,b) => (b.lever === null ? -1 : b.lever) - (a.lever === null ? -1 : a.lever));
+}
+
+function renderDrivers({ rows }){
+  const data = driverStats(rows);
+  const maxLever = Math.max(1, ...data.map(d => d.lever || 0));
+  const head = `<thead><tr>
+    <th>Part of the service</th>
+    <th class="num">People who<br>used it</th>
+    <th class="num">How many were<br>not satisfied</th>
+    <th class="num">Share who were<br>satisfied</th>
+    <th class="num">Score from the<br>satisfied group</th>
+    <th class="num">Score from the<br>not-satisfied group</th>
+    <th class="num">Difference<br>between them</th>
+    <th>Points we could win back<br>by fixing this</th></tr></thead>`;
+  const body = data.map(d => {
+    const pctCls = d.pct === null ? '' : d.pct >= 90 ? 'ok' : d.pct >= 75 ? 'warn' : 'bad';
+    const tooFew = '<span style="color:var(--ink-muted)" title="Fewer than 5 people in this group, too few to score">too few</span>';
+    return `<tr>
+      <td><b>${esc(d.label)}</b><div style="font-size:10.5px;color:var(--ink-muted)">${esc(d.group)}</div></td>
+      <td class="num">${d.app}</td>
+      <td class="num"><b>${d.unsat}</b></td>
+      <td class="num">${d.pct === null ? '&mdash;' : `<span class="flag ${pctCls}">${pct1(d.pct)}%</span>`}</td>
+      <td class="num">${d.nSat >= 5 ? `<span class="npsval ${d.npsSat>=0?'pos':'neg'}">${d.npsSat}</span>` : tooFew}</td>
+      <td class="num">${d.nUnsat >= 5 ? `<span class="npsval ${d.npsUnsat>=0?'pos':'neg'}">${d.npsUnsat}</span>` : tooFew}</td>
+      <td class="num">${d.gap === null ? '&mdash;' : d.gap}</td>
+      <td class="barcell">
+        <div class="bartrack"><div class="barfill" style="width:${d.lever ? (d.lever/maxLever*100) : 0}%;background:var(--b450)"></div></div>
+        <div style="font-size:11px;color:var(--ink-2);margin-top:3px;font-weight:650">${d.lever === null ? '&mdash;' : d.lever.toFixed(1) + ' pts'}</div>
+      </td></tr>`;
+  }).join('');
+  $('driverTable').innerHTML = head + `<tbody>${body || '<tr><td colspan="8" class="empty">Nobody rated any part of the service in this period.</td></tr>'}</tbody>`;
+
+  // A worked example built from the row that is actually at the top, so it can
+  // never drift out of step with the table when the filters change.
+  const d = data.find(x => x.lever !== null && x.app >= 20);
+  $('driverExample').innerHTML = !d ? '' : `
+    <b>Reading the top row.</b> ${d.app} people used ${esc(d.label).toLowerCase()} in this period, and
+    ${d.unsat} of them said they were not satisfied. Look at what each group scored us out of 10:
+    the ${d.app - d.unsat} satisfied people give a score of <b>${d.npsSat}</b>, while the ${d.unsat}
+    dissatisfied people give <b>${d.npsUnsat}</b>. That is a gap of <b>${d.gap} points</b> between being
+    happy and unhappy about this one thing. Spread that gap across the ${d.unsat} people it actually
+    happened to, out of ${npsStats(rows).n} who scored us, and it works out at about
+    <b>${d.lever.toFixed(1)} points</b> of our overall score. That is the figure in the last column.`;
+}
+
+/* ---------- heatmap ---------- */
+function renderHeatmap({ rows }){
+  const sites = [...groupBy(rows, r => r.site)]
+    .filter(([, rs]) => rs.length >= TH.minSampleForTrend)
+    .sort((a,b) => b[1].length - a[1].length);
+  if (!sites.length){ $('heatWrap').innerHTML = '<div class="empty">Not enough data for a site × touchpoint view in this period.</div>'; return; }
+
+  // Services run down the left and sites across the top. Service names are the
+  // long ones, and as row labels they read straight across; site names are short
+  // enough to sit in a column heading without being turned on their side.
+  const grid = TOUCHPOINTS.map(t => ({
+    label: t.label,
+    group: t.group,
+    vals: sites.map(([, rs]) => {
+      const st = satStats(rs, t.key);
+      return st.app >= 5 ? { pct: 100 - st.pct, app: st.app, unsat: st.unsat } : null;
+    })
+  }));
+  // Worst service first, so the top-left corner is where to look.
+  grid.sort((a, b) => {
+    const avg = g => { const v = g.vals.filter(Boolean); return v.length ? v.reduce((s, x) => s + x.pct, 0) / v.length : -1; };
+    return avg(b) - avg(a);
+  });
+
+  const shade = p => {
+    if (p === null) return { bg:'var(--plane)', fg:'var(--ink-muted)' };
+    if (p < 5)  return { bg:'#eef4fd', fg:'#52514e' };
+    if (p < 12) return { bg:'var(--b100)', fg:'#0b0b0b' };
+    if (p < 20) return { bg:'var(--b200)', fg:'#0b0b0b' };
+    if (p < 32) return { bg:'var(--b300)', fg:'#0b0b0b' };
+    if (p < 45) return { bg:'var(--b450)', fg:'#fff' };
+    if (p < 60) return { bg:'var(--b550)', fg:'#fff' };
+    return { bg:'var(--b650)', fg:'#fff' };
+  };
+
+  const head = `<thead><tr><th class="rowlbl" scope="col">Part of the service</th>${sites.map(([name, rs]) =>
+    `<th class="sitecol" scope="col">${esc(name)}<span class="sitecount">${rs.length} responses</span></th>`).join('')}</tr></thead>`;
+
+  const body = grid.map(g => `<tr>
+      <th class="rowlbl" scope="row">${esc(g.label)}<span class="rowgroup">${esc(g.group)}</span></th>
+      ${g.vals.map((v, i) => {
+        const s = shade(v ? v.pct : null);
+        // The "x of y" line under each percentage is the point of this grid:
+        // it makes every cell's own base visible without needing a tooltip.
+        return `<td><div class="cell" style="background:${s.bg};color:${s.fg}"
+          title="${esc(sites[i][0])}, ${esc(g.label)}: ${v ? `${v.unsat} of the ${v.app} people who used it were not satisfied, which is ${pct1(v.pct)}%` : 'fewer than 5 people here used this service, so no figure is shown'}">
+          ${v ? `${Math.round(v.pct)}%<div class="cellbase">${v.unsat}/${v.app}</div>` : '<span aria-hidden="true">&middot;</span><span class="sr">no data</span>'}</div></td>`;
+      }).join('')}</tr>`).join('');
+
+  const scale = [[0,'under 5%'],[8,'5 to 12%'],[16,'12 to 20%'],[26,'20 to 32%'],[38,'32 to 45%'],[52,'45 to 60%'],[70,'over 60%']]
+    .map(([v,l]) => { const s = shade(v);
+      return `<span style="display:inline-flex;align-items:center;gap:5px;margin-right:14px;white-space:nowrap">
+        <i style="width:13px;height:13px;border-radius:2px;background:${s.bg};display:inline-block;border:1px solid var(--hair)"></i>${l}</span>`; }).join('');
+
+  $('heatWrap').innerHTML = `<table class="heat">${head}<tbody>${body}</tbody></table>
+    <div style="font-size:11.5px;color:var(--ink-2);margin-top:14px;display:flex;flex-wrap:wrap;align-items:center;gap:4px 0">
+      <b style="margin-right:10px">Share who were not satisfied:</b>${scale}</div>
+    <div style="font-size:11.5px;color:var(--ink-muted);margin-top:8px">
+      The small figure inside each cell is that cell's own base, written as
+      <b>not satisfied / people who used it</b>. Every cell has a different base.</div>`;
+}
+
+/* ---------- segments ---------- */
+function segmentBars(rows, keyFn, order){
+  let entries = [...groupBy(rows, keyFn)].map(([k, rs]) => ({ k, n: rs.length, ...npsStats(rs) }));
+  if (order) entries.sort((a,b) => order.indexOf(a.k) - order.indexOf(b.k));
+  else entries.sort((a,b) => b.n - a.n);
+  if (!entries.length) return '<div class="empty">No data in this period.</div>';
+  return entries.map(e => {
+    if (e.nps === null) return '';
+    // -100..100 mapped onto a centred track
+    const half = Math.abs(e.nps)/2;                // % of full width
+    const left = e.nps >= 0 ? 50 : 50 - half;
+    const col = e.nps >= 0 ? 'var(--promoter)' : 'var(--detractor)';
+    const low = e.n < TH.minSampleForTrend ? `<span class="flag warn">only ${e.n}</span>` : '';
+    return `<div style="margin-bottom:11px">
+      <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px">
+        <span><b>${esc(e.k)}</b> <span style="color:var(--ink-muted)">(${e.n})</span> ${low}</span>
+        <span class="npsval ${e.nps>=0?'pos':'neg'}">${e.nps}</span></div>
+      <div style="position:relative;height:11px;background:var(--plane);border-radius:6px">
+        <div style="position:absolute;left:50%;top:-2px;bottom:-2px;width:1px;background:var(--axis)"></div>
+        <div style="position:absolute;left:${left}%;width:${half}%;top:0;bottom:0;background:${col};border-radius:3px"
+             title="NPS ${e.nps} · ${e.p} promoters, ${e.pa} passives, ${e.d} detractors"></div>
+      </div></div>`;
+  }).join('') + `<div style="font-size:10.5px;color:var(--ink-muted);margin-top:2px">Centre line = NPS 0. Left of it is net-negative.</div>`;
+}
+
+function renderSegments({ rows }){
+  $('segCat').innerHTML = segmentBars(rows, r => r.clientCategory);
+  $('segRegion').innerHTML = segmentBars(rows, r => r.region);
+  $('segAge').innerHTML = segmentBars(rows, r => r.ageRange, ['18 - 40 yrs','41 - 60 yrs','Above 60 yrs','Unspecified']);
+  $('segAddressed').innerHTML = segmentBars(
+    rows.filter(r => r.complaintsAddressed),
+    r => r.complaintsAddressed === 'Yes' ? 'Complaint was addressed' : 'Complaint was NOT addressed',
+    ['Complaint was addressed','Complaint was NOT addressed']);
+}
+
+/* ---------- voice of customer ---------- */
+function renderVoice({ rows }){
+  const withText = rows.filter(r => r.hasVerbatim);
+  const counts = new Map();
+  withText.forEach(r => (r.themes || []).forEach(t => counts.set(t, (counts.get(t) || 0) + 1)));
+  const sorted = [...counts].sort((a,b) => b[1] - a[1]);
+  const max = Math.max(1, ...sorted.map(x => x[1]));
+  // One colour per meaning, not one per bar: praise reads green, everything
+  // else is an issue and reads blue. The label already names the theme, so
+  // extra hues would be decoration.
+  const themeColor = n => n === 'Praise / Positive Mention' ? 'var(--good)'
+    : n === 'Other / Uncategorised' ? 'var(--axis)' : 'var(--b450)';
+
+  $('themeNote').textContent =
+    `${withText.length} of ${rows.length} responses left written feedback (${rows.filter(r=>r.complaint).length} in the complaint box, ${rows.filter(r=>r.suggestion).length} in the suggestions box).`;
+
+  $('themeBars').innerHTML = sorted.length ? sorted.map(([name, n]) => `
+    <div style="margin-bottom:9px">
+      <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px">
+        <span>${esc(name)}</span><span style="color:var(--ink-2)"><b>${n}</b> · ${pct1(n/withText.length*100)}%</span></div>
+      <div class="bartrack"><div class="barfill" style="width:${n/max*100}%;background:${themeColor(name)}"></div></div>
+    </div>`).join('') : '<div class="empty">No written feedback in this period.</div>';
+
+  const bands = ['all','Detractor','Passive','Promoter'];
+  const themeOpts = ['all', ...sorted.map(s => s[0])];
+  $('vFilters').innerHTML =
+    bands.map(b => `<button class="chip" type="button" data-band="${b}" aria-pressed="${vFilter.band===b}">${b==='all'?'All bands':b+'s'}</button>`).join('') +
+    `<span style="width:12px"></span>` +
+    themeOpts.map(t => `<button class="chip" type="button" data-theme="${esc(t)}" aria-pressed="${vFilter.theme===t}">${t==='all'?'All themes':esc(t)}</button>`).join('');
+
+  $('vFilters').querySelectorAll('button').forEach(b => b.onclick = () => {
+    if (b.dataset.band !== undefined) vFilter.band = b.dataset.band;
+    else vFilter.theme = b.dataset.theme;
+    renderVoice({ rows });
+  });
+
+  const list = withText
+    .filter(r => vFilter.band === 'all' || r.band === vFilter.band)
+    .filter(r => vFilter.theme === 'all' || (r.themes || []).includes(vFilter.theme))
+    .sort((a,b) => b.ts - a.ts)          // genuinely newest first
+    .slice(0, 60);
+
+  $('vList').innerHTML = list.length ? list.map(r => `
+    <div class="v ${(r.band||'').toLowerCase()}">
+      <div class="vhead">
+        <span class="tag score">${r.nps === null ? 'no score' : 'NPS ' + r.nps}</span>
+        ${(r.themes||[]).slice(0,3).map(t => `<span class="tag">${esc(t)}</span>`).join('')}
+        ${r.complaintsAddressed === 'No' ? '<span class="tag" style="background:#fbe3e3;color:#8c2626">unresolved</span>' : ''}
+        ${r.contactRequested === 'Yes' ? '<span class="tag" style="background:#fff4d8;color:#7a5600">wants contact</span>' : ''}
+      </div>
+      ${r.complaint  ? `<div class="vtext"><span class="k">Complaint</span>${esc(r.complaint)}</div>` : ''}
+      ${r.suggestion ? `<div class="vtext"><span class="k">Suggestion</span>${esc(r.suggestion)}</div>` : ''}
+      <div class="vmeta">${esc(r.site)} · ${esc(r.date)} · ${esc(r.clientCategory)}${r.org ? ' · ' + esc(r.org) : ''}</div>
+    </div>`).join('') : '<div class="empty">No comments match these filters.</div>';
+}
+
+/* ---------- service recovery ---------- */
+function recoveryQueue(rows){
+  const now = Date.now();
+  return rows
+    .filter(r => r.band === 'Detractor' || r.complaintsAddressed === 'No' || (r.contactRequested === 'Yes' && r.band !== 'Promoter'))
+    .map(r => ({ ...r, ageDays: Math.floor((now - r.ts)/DAY) }))
+    .sort((a,b) => b.recoveryScore - a.recoveryScore || b.ts - a.ts);
+}
+
+let recoveryRows = [];
+function renderRecovery({ rows }){
+  recoveryRows = recoveryQueue(rows);
+  const wants = recoveryRows.filter(r => r.contactRequested === 'Yes');
+  const overdue = wants.filter(r => r.ageDays > TH.recoverySlaDays);
+  const showContacts = META.contactDetailsPublished === 'mask';
+  $('recoveryNote').innerHTML =
+    `Everyone who scored us 6 or below, said their complaint went unaddressed, or asked us to get in touch.
+     They are ranked by a priority score built from how low they scored us, whether their complaint went unaddressed,
+     whether they asked for a call, how many parts of the service they were unhappy with, and whether they are a
+     referring account rather than a walk-in. <b>${recoveryRows.length}</b> in the queue,
+     <b>${wants.length}</b> explicitly asked to be contacted, <b>${overdue.length}</b> of those have been waiting longer than
+     ${TH.recoverySlaDays} days. ` +
+    (showContacts
+      ? `Contact details are masked here. The unmasked list is written to <code>private/service-recovery.csv</code> by the daily job and is deliberately not published.`
+      : `<b>Names, emails and phone numbers are deliberately not published on this page.</b> Match a case by its date, site and comment; the full callback list with contact details is written to <code>private/service-recovery.csv</code> on the machine that runs the daily job.`);
+
+  const top = recoveryRows.slice(0, 40);
+  const head = `<thead><tr><th class="num">Priority</th><th>Submitted</th><th>Site</th><th class="num">NPS</th>
+    <th>${showContacts ? 'Contact' : 'Reachable'}</th><th>What they said</th><th>Status</th></tr></thead>`;
+  const body = top.map(r => {
+    const late = r.contactRequested === 'Yes' && r.ageDays > TH.recoverySlaDays;
+    const text = [r.complaint, r.suggestion].filter(Boolean).join(' · ');
+    const contactCell = showContacts
+      ? `${r.contactName ? esc(r.contactName) : '<span style="color:var(--ink-muted)">anonymous</span>'}
+         <div style="color:var(--ink-muted);font-size:10.5px">${esc(r.contactEmail || r.contactPhone || '')}</div>`
+      : (r.hasContact ? '<span class="flag ok">details on file</span>'
+                      : '<span style="color:var(--ink-muted)">no details left</span>');
+    return `<tr>
+      <td class="num"><b>${r.recoveryScore}</b></td>
+      <td>${esc(r.date)}<div style="font-size:10.5px;color:${late?'var(--bad-ink)':'var(--ink-muted)'}">${r.ageDays} days ago${late?' · overdue':''}</div></td>
+      <td>${esc(r.site)}</td>
+      <td class="num npsval ${r.nps !== null && r.nps >= 0 ? 'pos':'neg'}">${r.nps === null ? 'n/a' : r.nps}</td>
+      <td style="font-size:11.5px">${contactCell}</td>
+      <td style="font-size:11.5px;max-width:460px">${text ? esc(text.slice(0,260)) + (text.length>260?'…':'') : '<span style="color:var(--ink-muted)">no written comment</span>'}</td>
+      <td style="font-size:11px">
+        ${r.contactRequested === 'Yes' ? '<span class="flag bad">wants contact</span>' : ''}
+        ${r.complaintsAddressed === 'No' ? '<span class="flag warn">unresolved</span>' : ''}
+        ${r.clientCategory && /external/i.test(r.clientCategory) ? '<span class="flag" title="A hospital, clinic or corporate that sends samples to us, rather than someone walking in off the street">Referring account</span>' : ''}</td>
+    </tr>`;
+  }).join('');
+  $('recoveryTable').innerHTML = head + `<tbody>${body || '<tr><td colspan="7" class="empty">Queue is empty for this period.</td></tr>'}</tbody>` +
+    (recoveryRows.length > 40 ? `<caption style="caption-side:bottom;text-align:left;font-size:11px;color:var(--ink-muted);padding-top:8px">Showing the top 40 of ${recoveryRows.length}. Use Export CSV for the full masked list.</caption>` : '');
+}
+
+/* ---------- accounts ---------- */
+function renderAccounts({ rows }){
+  const accounts = [...groupBy(rows.filter(r => r.org), r => r.org)]
+    .map(([org, rs]) => ({ org, n: rs.length, ...npsStats(rs),
+      unresolved: rs.filter(r => r.complaintsAddressed === 'No').length,
+      sites: [...new Set(rs.map(r => r.site))].join(', '),
+      latest: rs.slice().sort((a,b)=>b.ts-a.ts)[0] }))
+    .filter(a => a.n >= TH.minResponsesForAccount && a.org !== 'Own branch / walk-in')
+    .sort((a,b) => (a.nps === null ? 1 : b.nps === null ? -1 : a.nps - b.nps) || b.n - a.n);
+
+  const head = `<thead><tr><th>Account</th><th class="num">Responses</th><th class="num">NPS</th>
+    <th class="num">Detractors</th><th class="num">Unresolved</th><th>Sites used</th><th>Most recent comment</th></tr></thead>`;
+  const body = accounts.slice(0,25).map(a => {
+    const c = a.latest && (a.latest.complaint || a.latest.suggestion);
+    return `<tr>
+      <td><b>${esc(a.org)}</b>${a.n < 5 ? `<span class="flag warn" title="Only ${a.n} responses, so treat this as a rough indication only">few responses</span>` : ''}</td>
+      <td class="num">${a.n}</td>
+      <td class="num npsval ${a.nps !== null && a.nps >= 0 ? 'pos':'neg'}">${a.nps === null ? 'n/a' : a.nps}</td>
+      <td class="num">${a.d}</td>
+      <td class="num">${a.unresolved || '0'}</td>
+      <td style="font-size:11.5px;color:var(--ink-2)">${esc(a.sites)}</td>
+      <td style="font-size:11.5px;max-width:380px">${c ? esc(c).slice(0,180) + (c.length>180?'…':'') : '<span style="color:var(--ink-muted)">none left</span>'}</td>
+    </tr>`;
+  }).join('');
+  $('accountTable').innerHTML = head + `<tbody>${body ||
+    `<tr><td colspan="7" class="empty">No referring account returned ${TH.minResponsesForAccount}+ responses in this period. Most customers leave the organisation field blank or fill it in with their own name. Making it a required dropdown on the Microsoft Form is what would unlock account-level tracking.</td></tr>`}</tbody>`;
+}
+
+/* ---------- recommendations ---------- */
+function renderRecs({ rows, prev, window:w }){
+  const recs = [];
+  const s = npsStats(rows);
+  const p = npsStats(prev);
+
+  const drivers = driverStats(rows).filter(d => d.app >= 20);
+  if (drivers.length && drivers[0].lever !== null){
+    const d = drivers[0];
+    recs.push({ who:'Quality Assurance · Operations',
+      t:`Fix ${d.label} first: up to about ${d.lever.toFixed(1)} points sit behind it`,
+      d:`${d.unsat} of ${d.app} applicable respondents were dissatisfied (${pct1(100-d.pct)}%). Respondents who were satisfied with it score NPS ${d.npsSat}; those who were not score ${d.npsUnsat}, a gap of ${d.gap} points. No other touchpoint has a larger combination of gap and volume in this period. Treat the figure as an upper bound: it assumes every dissatisfied respondent moves to the satisfied group's score.` });
+  }
+
+  const addressed = rows.filter(r => r.complaintsAddressed);
+  const addrPct = addressed.length ? addressed.filter(r => r.complaintsAddressed === 'Yes').length/addressed.length*100 : null;
+  const noRows = rows.filter(r => r.complaintsAddressed === 'No');
+  if (noRows.length >= 3){
+    const nNo = npsStats(noRows), nYes = npsStats(rows.filter(r => r.complaintsAddressed === 'Yes'));
+    recs.push({ who:'Marketing / Customer Relations',
+      t:'Calling people back after a complaint is the single biggest thing you can change',
+      d:`Respondents who said their complaint WAS adequately addressed score NPS ${nYes.nps} (n=${nYes.n}). Those who said it was not score ${nNo.nps} (n=${nNo.n}). That is a swing of ${nYes.nps - nNo.nps} points, and it turns on whether somebody followed up, not on laboratory capacity. ${addrPct !== null ? `Currently ${pct1(addrPct)}% report being adequately addressed.` : ''}` });
+  }
+
+  const sites = [...groupBy(rows, r => r.site)].map(([name, rs]) => ({ name, n: rs.length, ...npsStats(rs) }))
+    .filter(x => x.n >= TH.minSampleForRanking);
+  if (sites.length >= 2){
+    const worst = sites.slice().sort((a,b) => a.nps - b.nps)[0];
+    const best  = sites.slice().sort((a,b) => b.nps - a.nps)[0];
+    if (worst.nps < s.nps){
+      const wr = rows.filter(r => r.site === worst.name);
+      let wt = null;
+      for (const t of TOUCHPOINTS){ const st = satStats(wr, t.key); if (st.app >= 5 && (!wt || st.unsat > wt.unsat)) wt = { label:t.label, ...st }; }
+      recs.push({ who:'Business Development · Branch Management',
+        t:`Put ${worst.name} on a branch-level corrective action plan`,
+        d:`NPS ${worst.nps} across ${worst.n} responses against ${s.nps} for the group, with ${worst.d} detractors to ${worst.p} promoters.${wt ? ` Its most-cited failure is ${wt.label} (${wt.unsat} of ${wt.app} dissatisfied).` : ''} It carries ${pct1(worst.n/rows.length*100)}% of all feedback volume, so its score materially drags the group figure.` });
+    }
+    if (best.nps >= s.nps + 15){
+      recs.push({ who:'Quality Assurance',
+        t:`Document what ${best.name} is doing and transfer it`,
+        d:`NPS ${best.nps} across ${best.n} responses, ${best.nps - s.nps} points above the group. A short process walkthrough there is cheaper than a consultant and gives the corrective-action meeting something concrete to copy.` });
+    }
+  }
+
+  const wants = recoveryQueue(rows).filter(r => r.contactRequested === 'Yes');
+  const overdue = wants.filter(r => r.ageDays > TH.recoverySlaDays);
+  if (wants.length){
+    recs.push({ who:'Customer Relations',
+      t:`Work the ${wants.length}-person callback list${overdue.length ? `, of whom ${overdue.length} have been waiting longer than ${TH.recoverySlaDays} days` : ''}`,
+      d:`These respondents explicitly ticked "yes, contact me" and left details. ${overdue.length ? `The oldest has been waiting ${Math.max(...overdue.map(r=>r.ageDays))} days.` : 'All are currently within ' + TH.recoverySlaDays + ' days.'} Turning one of them from a detractor into a promoter is worth roughly ${s.n ? (200/s.n).toFixed(1) : 'n/a'} points at the current number of responses, before any effect on revenue.` });
+  }
+
+  if (w.comparable && prev.length >= 10 && rows.length/Math.max(prev.length,1) < 0.7){
+    recs.push({ who:'Marketing · Quality Assurance',
+      t:'Response volume is falling, so fix collection before reading the trend',
+      d:`${rows.length} responses this period against ${prev.length} in the prior one. Below roughly ${TH.minSampleForRanking} responses per site per month the site-level numbers stop being decision-grade. Check that the survey link is still going out with results and that front-desk prompting is happening.` });
+  }
+
+  const withText = rows.filter(r => r.hasVerbatim);
+  const counts = new Map();
+  withText.forEach(r => (r.themes||[]).forEach(t => counts.set(t, (counts.get(t)||0)+1)));
+  const topTheme = [...counts]
+    .filter(([n]) => n !== 'Praise / Positive Mention' && n !== 'Other / Uncategorised')
+    .sort((a,b) => b[1]-a[1])[0];
+  if (topTheme){
+    recs.push({ who:'Executive / Management review',
+      t:`"${topTheme[0]}" is the dominant thing customers write about`,
+      d:`Mentioned in ${topTheme[1]} of ${withText.length} written comments (${pct1(topTheme[1]/withText.length*100)}%). Most of this text arrives through the suggestions box rather than the complaint box, so a complaint-count-only view understates it.` });
+  }
+
+  $('recs').innerHTML = recs.length ? recs.map((r,i) => `
+    <div class="rec"><div class="n">${String(i+1).padStart(2,'0')}</div>
+      <div><div class="t">${esc(r.t)}</div><div class="d">${esc(r.d)}</div><div class="who">${esc(r.who)}</div></div>
+    </div>`).join('') : '<div class="empty">Not enough data in this period to generate reliable recommendations.</div>';
+}
+
+/* ---------- data quality / method ---------- */
+function renderMeta({ rows }){
+  const i = META.issues || {};
+  const noScore = rows.filter(r => r.nps === null).length;
+  const rowsHtml = [
+    ['Source file', `${esc(META.sourceFile)}, last modified ${esc((META.sourceModified||'').slice(0,16).replace('T',' '))}`],
+    ['Build time', esc(META.builtAt.slice(0,16).replace('T',' ')) + ' UTC'],
+    ['Responses in the file, then loaded', `${META.sourceRows} in the file, ${META.loadedRows} loaded` +
+      (() => {
+        const p = META.previousLoadedRows;
+        if (p === null || p === undefined) return '';
+        const d = META.loadedRows - p;
+        if (d > 0) return ` (<b>${d} new</b> since the previous build)`;
+        if (d === 0) return ' (no new responses since the previous build)';
+        return ` <span class="flag bad">${-d} fewer than last time</span> This usually means a
+                filtered export was downloaded rather than the full one. Worth checking.`;
+      })()],
+    ['Rows excluded', `${i.testRows||0} test submission${(i.testRows||0)===1?'':'s'}, ${i.noDate||0} with no usable date, ${i.dupIds||0} duplicate ID${(i.dupIds||0)===1?'':'s'}`],
+    ['No 0–10 score', `${noScore} response${noScore===1?'':'s'} in the current selection are excluded from NPS maths but counted in response totals`],
+    ['Unmapped site labels', (META.unmappedSites && META.unmappedSites.length)
+      ? `<span class="flag bad">${META.unmappedSites.map(esc).join(', ')}</span>. Add these to <code>etl/config.js</code> so they merge correctly`
+      : '<span class="flag ok">none, every branch label matched a known site</span>'],
+    ['Known ambiguity', 'Some respondents typed just "Lagos", which could mean any of the three Lagos branches. Those responses are kept as their own row rather than guessed into one branch. A drop-down list of branches on the form would end the ambiguity.'],
+    ['Personal data', META.contactDetailsPublished === 'mask'
+      ? 'Names, emails and phone numbers are masked in this published build. The unmasked service-recovery list stays on the local machine.'
+      : 'Respondent names, emails and phone numbers are <b>not published here at all</b>. The service-recovery queue shows only whether contact details exist; the actual details are written to <code>private/service-recovery.csv</code> on the machine that runs the daily job. Written comments are published exactly as the customer typed them, so if somebody wrote their own name inside a comment it will appear.']
+  ];
+  $('dqBuild').innerHTML = rowsHtml.map(([k,v]) => `<dt>${k}</dt><dd>${v}</dd>`).join('');
+
+  $('dqMethod').innerHTML = [
+    ['NPS', 'Percentage of promoters (9–10) minus percentage of detractors (0–6), of responses that carried a score. Passives (7–8) sit in the denominator only.'],
+    ['Share who were satisfied', '"Not applicable" answers are taken out of the sum entirely. A service rated 253 satisfied, 15 not satisfied and 162 not applicable reads 94.4%, not 58.8%.'],
+    ['Points we could win back', 'The score gap between the people satisfied and not satisfied with a service, multiplied by the share of everyone who was not satisfied with it. It is an estimate of what is available, not a forecast: it assumes the two things move together, and things moving together is not proof that one causes the other.'],
+    ['Themes', 'Keyword tagging over both the complaint box and the suggestions box. A comment can carry several themes, so mentions exceed comment count. Keywords live in etl/config.js and can be extended without touching the dashboard.'],
+    ['Sample thresholds', `Sites under ${TH.minSampleForRanking} responses are flagged; months under ${TH.minSampleForTrend} are drawn as hollow points; touchpoint cells under 5 applicable answers are left blank.`],
+    ['Comparison period', 'The equally long window immediately before the selected one, with the same site, region and client-type filters applied.'],
+    ['Targets', `NPS target ${TH.npsTarget} (on the &minus;100 to +100 scale) and satisfaction target ${TH.satisfactionTarget}%. Source: ${esc(TH.targetSource)}. Both are set in <code>etl/config.js</code>.`]
+  ].map(([k,v]) => `<dt>${k}</dt><dd>${v}</dd>`).join('');
+
+  $('footer').innerHTML =
+    `Customer Experience and NPS Dashboard, public demo on synthetic data. Every branch, clinic and person is fictional.<br>
+     Source: Microsoft Forms customer survey export, ${esc(META.dateFrom)} to ${esc(META.dateTo)}, ${META.loadedRows} responses.
+     Rebuilt automatically each day; last build ${esc(META.builtAt.slice(0,16).replace('T',' '))} UTC.
+     Internal circulation only.`;
+}
+
+/* ---------- CSV export ---------- */
+function exportCsv(){
+  const cols = ['recoveryScore','date','site','region','nps','band','clientCategory','org',
+    ...(META.contactDetailsPublished === 'mask' ? ['contactName','contactEmail','contactPhone'] : ['hasContact']),
+    'contactRequested','complaintsAddressed','themePrimary','complaint','suggestion'];
+  const q = v => { const s = v == null ? '' : String(v); return /[",\n]/.test(s) ? '"'+s.replace(/"/g,'""')+'"' : s; };
+  const csv = [cols.join(',')].concat(recoveryRows.map(r => cols.map(c => q(r[c])).join(','))).join('\n');
+  const blob = new Blob(['﻿'+csv], { type:'text/csv;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `demo-recovery-queue-${new Date().toISOString().slice(0,10)}.csv`;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+}
+
+/* ------------------------------------------------------- URL state sync
+   Filters live in the query string, so a filtered view can be bookmarked and
+   shared. "Kano, last 90 days" is then a link somebody can keep. */
+const FILTER_IDS = ['fPreset','fYear','fQuarter','fMonth','fRegion','fSite','fCat'];
+const URL_KEYS = { fPreset:'period', fYear:'year', fQuarter:'quarter', fMonth:'month',
+                   fRegion:'region', fSite:'site', fCat:'client' };
+
+function readUrlState(){
+  const q = new URLSearchParams(location.search);
+  FILTER_IDS.forEach(id => {
+    const v = q.get(URL_KEYS[id]);
+    if (v === null) return;
+    const sel = $(id);
+    // Ignore a value that is not actually an option, e.g. a site that has
+    // been renamed since the link was shared.
+    if ([...sel.options].some(o => o.value === v)) sel.value = v;
+  });
+}
+
+function writeUrlState(){
+  const q = new URLSearchParams();
+  FILTER_IDS.forEach(id => {
+    const v = $(id).value;
+    const isDefault = id === 'fPreset' ? v === '365' : v === 'all';
+    if (!isDefault) q.set(URL_KEYS[id], v);
+  });
+  const qs = q.toString();
+  history.replaceState(null, '', qs ? `?${qs}` : location.pathname);
+}
+
+/* ---------------------------------------------------------------- wiring */
+FILTER_IDS.forEach(id => {
+  $(id).addEventListener('change', () => {
+    vFilter = { band:'all', theme:'all' };
+    writeUrlState();
+    render();
+    announce(`Filters updated. ${$('periodMeta').textContent}`);
+  });
+});
+$('btnReset').addEventListener('click', () => {
+  $('fPreset').value = '365';
+  ['fYear','fQuarter','fMonth','fRegion','fSite','fCat'].forEach(id => $(id).value = 'all');
+  siteSort = { key:'n', dir:'desc' };
+  vFilter = { band:'all', theme:'all' };
+  writeUrlState();
+  render();
+  announce('Filters reset to the last 12 months, all sites.');
+});
+$('btnPrint').addEventListener('click', () => window.print());
+$('btnCsv').addEventListener('click', exportCsv);
+
+buildFilters();
+readUrlState();
+render();
+</script>
+</body>
+</html>

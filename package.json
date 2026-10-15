@@ -1,0 +1,21 @@
+{
+  "name": "nps-customer-experience",
+  "version": "1.0.0",
+  "description": "ETL and dashboard for a customer-experience survey (Microsoft Forms export): public demo on synthetic data.",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "generate": "python generator/generate_survey.py",
+    "build": "node etl/build.js --force",
+    "serve": "node etl/serve.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "xlsx": "^0.18.5"
+  },
+  "private": true
+}
