@@ -30,6 +30,35 @@ Net Promoter Score (NPS) is the share of customers who would recommend you (scor
 
 All of these numbers come from [`analysis/analyse.py`](analysis/analyse.py), which reads the dashboard's own output (`dist/data.json`), so the write-up and the dashboard can't disagree. They are saved in [`analysis/findings.json`](analysis/findings.json).
 
+## What changed in November 2026
+
+After the dashboard had been in daily use for a few months, I audited it against a list of requested changes and rebuilt the parts that deserved it. The calculations held up: they still match Microsoft Forms' own summary for the same responses. The layout and the filters did not.
+
+- **Five tabs instead of one long page.** Overview, Sites & Services, Customer Feedback, Follow-ups, and Data & Exports, each answering one management question. The open tab, the filters and a selected case live in the web address, so a view can be bookmarked or shared.
+- **Filters that cannot contradict each other.** Before, "Last 12 months" could show while a year picked lower down was really in charge, and you could choose Q3 with March. Now the quick periods and the year/quarter/month pickers switch each other off, and the quarter and month lists only offer periods that exist in the data.
+- **One Location control.** Region and branch were two boxes, so "Region: Lagos" with "Branch: Kano" gave an empty dashboard that looked like good news. They are now one list: all branches, then each region and its branches.
+- **Two more headline numbers.** Average score out of 10, and the share of Passives.
+- **How Themes Are Moving.** The top complaint themes per quarter, with the busiest period shaded, so you can see whether a problem is growing or fading.
+- **Comments linked to follow-ups.** A comment from someone in the callback queue shows its follow-up status and links to the case.
+- **A follow-up log that can't be rewritten.** Staff record each call, message or visit against a case, including "reached them, waiting to hear back" and who the case is now with. Entries can't be edited or deleted; a mistake is fixed by logging a correction, so the history an auditor sees is the full history. Anyone can see *that* a case was followed up; only staff with the team passcode see who did it and the note.
+- **The raw data is downloadable.** The original survey export (contact columns blanked) and the cleaned dataset, so anyone can check the dashboard against its source in Excel or Power BI.
+- **Printing gives a report,** with the current filters, date range and response count in a header, rather than a screenshot of the screen.
+
+![Follow-ups tab](docs/followups.png)
+
+### Where I pushed back on the brief
+
+- **"Remove the Period filter."** I kept it. The quick periods answer the common questions fastest. The real problem was that they could disagree with the year picker, so I fixed that instead.
+- **"Remove the Region filter."** I merged it with Branch rather than dropping it, because a network with several regions does use regional totals.
+- **"Publish the raw data exactly as downloaded."** Done, except for names, emails and phone numbers. The dashboard is on an open link, and the build refuses to publish if a blanked column still holds a value.
+- **"Copy Microsoft Forms' charts."** I copied its one-question-per-section clarity, not its word clouds, which rank "no" and "Nil" as top answers.
+
+### The follow-up log in this demo
+
+At work the log is stored by a small server function, so every colleague sees the same entries. GitHub Pages can't run one, so this demo runs the same rules inside your browser instead: what you log is saved only on your device, and a few invented follow-ups are filled in on your first visit. The demo passcode is `demo1234`, and **Reset demo log** on the Follow-ups tab puts the examples back.
+
+![How Themes Are Moving](docs/themes.png)
+
 ## How the pipeline works
 
 ```
@@ -52,6 +81,8 @@ Microsoft Forms export (.xlsx)  ->  newest file in Raw_Data/
         |                                 reaches a published field)
         v
   dist/index.html  +  dist/data.json     the dashboard, data built in
+  dist/raw-data.xlsx, raw-data.csv       the survey export, contact columns blanked
+  dist/clean-data.csv                    the cleaned dataset the dashboard computes from
 ```
 
 Decisions worth explaining:

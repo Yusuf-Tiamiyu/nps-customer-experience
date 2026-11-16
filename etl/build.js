@@ -145,14 +145,78 @@ function writeRecoveryCsv(pii) {
   const queue = pii
     .filter(r => r.band === 'Detractor' || r.contactRequested === 'Yes' || r.complaintsAddressed === 'No')
     .sort((a, b) => b.recoveryScore - a.recoveryScore);
-  const cols = ['recoveryScore','date','site','nps','band','name','email','phone',
+  // caseId first: it is the "Case 434" shown on the dashboard, and how staff
+  // match a case on the page to the phone number in this file.
+  const cols = ['caseId','recoveryScore','date','site','nps','band','name','email','phone',
                 'contactRequested','complaintsAddressed','complaint','suggestion'];
   const csv = [cols.join(',')]
-    .concat(queue.map(r => cols.map(c => csvEscape(r[c])).join(',')))
+    .concat(queue.map(r => cols.map(c => csvEscape(c === 'caseId' ? r.id : r[c])).join(',')))
     .join('\n');
   fs.mkdirSync(PRIVATE, { recursive: true });
   fs.writeFileSync(path.join(PRIVATE, 'service-recovery.csv'), '﻿' + csv, 'utf8');
   return queue.length;
+}
+
+/* ---------------------------------------------------- downloadable exports
+   Three files land in dist/ so anyone can check the dashboard against its
+   source, or run their own analysis, without the Microsoft Forms login:
+
+   raw-data.xlsx / raw-data.csv
+     Every response exactly as exported from Forms: same rows, columns, order
+     and values. ONLY the contact-detail columns are blanked, because dist/ is
+     a public site. Free-text comments stay as written, same policy as the
+     dashboard itself.
+
+   clean-data.csv
+     One row per response after cleaning (standardised sites, themes, bands):
+     the exact dataset the dashboard computes from. */
+const REDACT_HEADERS = new Set([
+  'email', 'name',                       // the Forms account columns
+  'please leave your email.',
+  'please leave your phone number.',
+  'your name and surname',
+  'email2',
+  'mobile / phone'
+]);
+
+function writePublicExports(workbookPath, publicRecords) {
+  const wb = XLSX.readFile(workbookPath, { cellDates: false, raw: false });
+  const sheet = wb.Sheets[wb.SheetNames[0]];
+  const rows = XLSX.utils.sheet_to_json(sheet, { defval: '', raw: false });
+  if (!rows.length) throw new Error('The workbook produced no rows for the public export.');
+
+  const headers = Object.keys(rows[0]);
+  const toRedact = headers.filter(h => REDACT_HEADERS.has(T.normHeader(h)));
+  for (const row of rows) for (const h of toRedact) row[h] = '';
+
+  // Prove the redaction before publishing: the redacted columns must be empty.
+  for (const row of rows) for (const h of toRedact) {
+    if (String(row[h]).trim() !== '') throw new Error(`Refusing to export: "${h}" still holds a value after redaction.`);
+  }
+
+  const out = XLSX.utils.json_to_sheet(rows, { header: headers });
+  const outWb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(outWb, out, 'Responses');
+  const about = XLSX.utils.aoa_to_sheet([
+    ['About this file'],
+    ['Synthetic survey export for Demo Diagnostics, a fictional lab network. Every response is invented.'],
+    [`Rows: ${rows.length}. Columns are unchanged from the Forms export.`],
+    [`For privacy, these columns are blanked: ${toRedact.join('; ')}.`],
+    ['Everything else, including written comments, is exactly as the customer submitted it.'],
+    [`Generated ${new Date().toISOString()}`]
+  ]);
+  XLSX.utils.book_append_sheet(outWb, about, 'About');
+  XLSX.writeFile(outWb, path.join(DIST, 'raw-data.xlsx'));
+  fs.writeFileSync(path.join(DIST, 'raw-data.csv'), '﻿' + XLSX.utils.sheet_to_csv(out), 'utf8');
+
+  const cleanCols = ['id','date','site','region','clientCategory','gender','ageRange','org','nps','band',
+    ...TOUCHPOINTS.map(t => t.key),
+    'complaintsAddressed','contactRequested','hasContact','themePrimary','themes','complaint','suggestion','isRepeatRespondent'];
+  const cleanCsv = [cleanCols.join(',')].concat(publicRecords.map(r =>
+    cleanCols.map(c => csvEscape(c === 'themes' ? (r.themes || []).join('; ') : r[c])).join(','))).join('\n');
+  fs.writeFileSync(path.join(DIST, 'clean-data.csv'), '﻿' + cleanCsv, 'utf8');
+
+  return { rows: rows.length, redacted: toRedact.length };
 }
 
 /* Last line of defence before anything is written to dist/.
@@ -270,6 +334,8 @@ function main() {
 
   const textLeaks = auditPayload(payload);
   const outPath = render(payload);
+  const exported = writePublicExports(wbInfo.full, publicRecords);
+  log(`Public exports: raw-data.xlsx / raw-data.csv (${exported.rows} rows, ${exported.redacted} contact columns blanked) and clean-data.csv.`);
 
   log(`Rows in file: ${sourceRows} · loaded: ${records.length} · dropped: ${sourceRows - records.length} ` +
       `(test=${issues.testRows}, no-date=${issues.noDate}, dup-id=${issues.dupIds})`);

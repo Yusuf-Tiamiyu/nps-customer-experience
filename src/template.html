@@ -28,6 +28,7 @@
   --b100:#cde2fb; --b200:#9ec5f4; --b300:#6da7ec; --b450:#2a78d6; --b550:#1c5cab; --b650:#104281;
 }
 *{margin:0;padding:0;box-sizing:border-box}
+[hidden]{display:none!important}
 html{-webkit-text-size-adjust:100%}
 body{
   font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
@@ -205,6 +206,47 @@ td.num,th.num{text-align:right}
 .rec .d{font-size:12.5px;color:var(--ink-2)}
 .rec .who{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--brand);margin-top:6px}
 
+/* ---------- follow-up log ---------- */
+.flag.info{background:#e6effb;color:#1c4f8f;border-color:#c5d8f2}
+.btn-sm{font-size:11px;padding:5px 10px}
+.btn-quiet{border-color:transparent;background:transparent;color:var(--brand);padding-left:4px;padding-right:4px}
+.btn-quiet:hover{background:var(--plane);border-color:transparent;color:var(--brand);text-decoration:underline;text-underline-offset:3px}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+.futools{margin-bottom:12px}
+.futools-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.chipn{display:inline-block;margin-left:4px;font-weight:700;opacity:.8}
+.fumsg{font-size:11.5px;color:var(--ink-muted)}
+.fucell{min-width:178px}
+.fulast{font-size:10.5px;color:var(--ink-2);margin-top:4px;line-height:1.35}
+.fubtns{display:flex;gap:4px;flex-wrap:wrap;margin-top:6px}
+tr.fuhist > td{background:var(--plane);padding:10px 16px 12px}
+tr.fuhist:hover{background:transparent}
+.fuh-list{list-style:none;display:flex;flex-direction:column;gap:9px}
+.fuh-list li{border-left:2px solid var(--axis);padding-left:10px}
+.fuh-head{font-size:12px}
+.fuh-note{font-size:12.3px;color:var(--ink);margin-top:2px;white-space:pre-wrap;overflow-wrap:break-word}
+.fuh-meta{font-size:10.5px;color:var(--ink-muted);margin-top:2px}
+
+.fudialog{margin:auto;border:1px solid var(--hair);border-radius:6px;padding:0;width:min(560px,calc(100vw - 32px));
+  max-height:calc(100vh - 32px);color:var(--ink);background:var(--surface);box-shadow:0 12px 40px rgba(11,11,11,.18)}
+.fudialog-sm{width:min(400px,calc(100vw - 32px))}
+.fudialog::backdrop{background:rgba(10,31,68,.45)}
+.fudialog form{padding:20px 22px;overflow-y:auto;overscroll-behavior:contain}
+.fudialog h2{font-size:16px;margin-bottom:12px}
+.fucase{font-size:12px;color:var(--ink-2);background:var(--plane);border:1px solid var(--hair);
+  border-radius:4px;padding:10px 12px;margin-bottom:16px}
+.fuq{margin-top:5px;color:var(--ink);font-style:italic;overflow-wrap:break-word}
+.frow{margin-bottom:13px}
+.frow label{display:block;font-size:12px;font-weight:650;margin-bottom:4px}
+.frow input,.frow select,.frow textarea{font:inherit;font-size:13px;width:100%;padding:7px 9px;
+  border:1px solid var(--axis);border-radius:4px;background:var(--surface);color:var(--ink)}
+.frow textarea{resize:vertical;min-height:84px}
+.frow input:focus-visible,.frow select:focus-visible,.frow textarea:focus-visible{outline:2px solid var(--brand);outline-offset:1px}
+.fhint{font-size:11px;color:var(--ink-muted);margin-top:4px}
+.ferr{font-size:11.5px;color:var(--bad-ink);margin-top:3px;font-weight:600}
+.ferr:empty{display:none}
+.factions{display:flex;justify-content:flex-end;gap:8px;margin-top:6px}
+
 /* ---------- misc ---------- */
 .empty{font-size:12.5px;color:var(--ink-muted);padding:14px 2px}
 .worked{margin-top:16px;padding:13px 15px;background:var(--plane);border:1px solid var(--hair);
@@ -217,13 +259,59 @@ footer{padding:20px 28px 40px;font-size:11.5px;color:var(--ink-muted);border-top
 .chartbox{position:relative}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 
+/* ---------- tab bar ---------- */
+.tabbar{background:var(--surface);border-bottom:1px solid var(--grid);position:sticky;top:0;z-index:55}
+.tabbar-inner{max-width:1560px;margin:0 auto;padding:0 28px;display:flex;gap:2px;overflow-x:auto}
+.tabbtn{font:inherit;font-size:13px;font-weight:650;color:var(--ink-2);background:none;border:0;
+  border-bottom:3px solid transparent;padding:11px 14px 9px;cursor:pointer;white-space:nowrap}
+.tabbtn:hover{color:var(--ink);background:var(--plane)}
+.tabbtn.on{color:var(--brand);border-bottom-color:var(--brand)}
+.tabn{display:inline-block;margin-left:6px;font-size:10.5px;font-weight:700;padding:1px 7px;border-radius:9px;
+  background:var(--plane);color:var(--ink-2);border:1px solid var(--hair)}
+.tabbtn.on .tabn{background:#e6effb;color:var(--brand);border-color:#c5d8f2}
+.section[hidden]{display:none}
+
+/* ---------- read-more details ---------- */
+details.how{margin-top:6px;font-size:12px;color:var(--ink-2)}
+details.how summary{cursor:pointer;color:var(--brand);font-weight:650;font-size:11.5px;
+  list-style-position:inside;width:fit-content;border-radius:3px}
+details.how summary:hover{text-decoration:underline;text-underline-offset:3px}
+details.how > div{margin-top:8px;max-width:96ch;padding:10px 12px;background:var(--surface);
+  border:1px solid var(--hair);border-left:3px solid var(--grid);border-radius:4px}
+details.how p + p{margin-top:8px}
+
+/* ---------- follow-up stat strip, downloads, misc ---------- */
+.statstrip{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px}
+@media(max-width:900px){.statstrip{grid-template-columns:repeat(2,1fr)}}
+.flag.wait{background:#efeafa;color:#4a3a86;border-color:#d9cff2}
+.dl{list-style:none;display:flex;flex-direction:column;gap:12px}
+.dl a{font-weight:650}
+.dl .dld{font-size:11.5px;color:var(--ink-muted);margin-top:2px}
+tr.rowhl > td, tr.rowhl > th{background:#fff4d8 !important}
+.trend{border-collapse:collapse;font-size:12px;width:100%}
+.trend th,.trend td{padding:6px 8px;border-bottom:1px solid var(--grid);text-align:right;max-width:none}
+.trend th:first-child,.trend td:first-child{text-align:left}
+.trend td.hi{font-weight:700;background:var(--b100)}
+.trend td.zero{color:var(--ink-muted)}
+
+/* ---------- print: a report, not a screenshot ---------- */
+.printhead{display:none}
 @media print{
-  .toolbar,.vfilters,.btn{display:none!important}
-  body{background:#fff;font-size:11px}
-  .section{padding:12px 16px;break-inside:avoid}
-  .card,.kpi,.alert,.rec{break-inside:avoid;box-shadow:none}
+  @page{margin:12mm}
+  .toolbar,.tabbar,.vfilters,.btn,.fubtns,.futools,#recoveryMore,details.how{display:none!important}
+  .section[data-view][hidden]{display:block!important}
+  .printhead{display:block;padding:0 0 10px;border-bottom:2px solid var(--navy);margin-bottom:8px}
+  .printhead .ph-title{font-size:16px;font-weight:700}
+  .printhead .ph-meta{font-size:10.5px;color:var(--ink-2);margin-top:3px}
+  .header{display:none}
+  body{background:#fff;font-size:10.5px}
+  .wrap{max-width:none}
+  .section{padding:10px 0}
+  .section[data-break]{page-break-before:always}
+  h2{page-break-after:avoid}
+  .card,.kpi,.alert,.rec,tr,.v{break-inside:avoid;box-shadow:none}
   .vlist{max-height:none;overflow:visible}
-  .header{background:var(--navy)!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .chartbox{break-inside:avoid}
   *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
 }
 </style>
@@ -236,13 +324,11 @@ footer{padding:20px 28px 40px;font-size:11.5px;color:var(--ink-muted);border-top
     <div class="fg"><label for="fYear">Year</label><select id="fYear"></select></div>
     <div class="fg"><label for="fQuarter">Quarter</label><select id="fQuarter"></select></div>
     <div class="fg"><label for="fMonth">Month</label><select id="fMonth"></select></div>
-    <div class="fg"><label for="fRegion">Region</label><select id="fRegion"></select></div>
-    <div class="fg"><label for="fSite">Site</label><select id="fSite"></select></div>
+    <div class="fg"><label for="fLoc">Location</label><select id="fLoc"></select></div>
     <div class="fg"><label for="fCat">Client type</label><select id="fCat"></select></div>
     <button class="btn" id="btnReset" type="button">Reset</button>
     <div class="spacer"></div>
     <div class="freshness" id="freshness"></div>
-    <button class="btn" id="btnCsv" type="button">Export CSV</button>
     <button class="btn btn-primary" id="btnPrint" type="button">Print / PDF</button>
   </div>
 </div>
@@ -260,23 +346,32 @@ footer{padding:20px 28px 40px;font-size:11.5px;color:var(--ink-muted);border-top
   </div>
 </div>
 
+<nav class="tabbar" aria-label="Dashboard sections">
+  <div class="tabbar-inner" id="tabbar"></div>
+</nav>
+
 <div class="wrap">
 
   <p class="sr" id="liveStatus" role="status" aria-live="polite"></p>
 
-  <div class="section">
+  <div class="printhead">
+    <div class="ph-title">Demo Diagnostics (fictional) · Customer Experience &amp; NPS Report · synthetic data</div>
+    <div class="ph-meta" id="printMeta"></div>
+  </div>
+
+  <div class="section" data-view="overview">
     <div class="section-head"><h2>What Needs Attention Right Now</h2></div>
-    <div class="section-note">Written automatically from the period you have selected. Every card states the number it is based on, so you can check it against the tables below.</div>
+    <div class="section-note">Written automatically from your current selection. Every card states the number it is based on.</div>
     <div class="alerts" id="alerts"></div>
   </div>
 
-  <div class="section">
+  <div class="section" data-view="overview">
     <div class="section-head"><h2>Headline Numbers</h2></div>
     <div class="section-note" id="kpiNote"></div>
     <div class="kpis" id="kpis"></div>
   </div>
 
-  <div class="section">
+  <div class="section" data-view="overview">
     <div class="section-head"><h2>Net Promoter Score</h2></div>
     <div class="section-note">NPS = % Promoters (score 9–10) minus % Detractors (0–6). Passives (7–8) count in the base but not the score. Range −100 to +100.</div>
     <div class="grid-4060">
@@ -305,49 +400,52 @@ footer{padding:20px 28px 40px;font-size:11.5px;color:var(--ink-muted);border-top
     </div>
   </div>
 
-  <div class="section">
+  <div class="section" data-view="sites" data-break="1">
     <div class="section-head"><h2>Site League Table</h2></div>
-    <div class="section-note">Sorted by how many responses each site received. Click any column heading to re-sort. The change column compares this period against the period of the same length immediately before it. Sites with too few responses to be reliable are marked, and their score should be read as a rough indication only.</div>
+    <div class="section-note">Sorted by response volume. Click any column heading to re-sort.
+      <details class="how"><summary>How to read this</summary><div>
+        <p>The change column compares this period against the period of the same length immediately before it,
+        with the same filters applied.</p>
+        <p>Sites with too few responses to be reliable are marked "few responses", and their score should be read
+        as a rough indication only.</p>
+      </div></details>
+    </div>
     <div class="card"><div class="tablewrap"><table id="siteTable"></table></div></div>
   </div>
 
-  <div class="section">
+  <div class="section" data-view="sites">
     <div class="section-head"><h2>What Should We Fix First</h2></div>
-    <div class="section-note">
-      <p>This table ranks every part of our service by how much fixing it would improve our score. The last column
-      is the one to act on: it estimates how many points we would win back if nobody were unhappy with that part
-      of the service any more. Bigger number, bigger prize.</p>
-      <p style="margin-top:8px">Anyone who answered "Not applicable" is left out completely. If you never used the
-      courier service, your opinion of it is not counted for us or against us.</p>
+    <div class="section-note">Every part of the service, ranked by the score points we would win back by fixing it. The last column is the one to act on.
+      <details class="how"><summary>How to read this</summary><div>
+        <p>Anyone who answered "Not applicable" is left out completely. If you never used the courier service,
+        your opinion of it is not counted for us or against us.</p>
+        <div class="worked" id="driverExample" style="margin-top:8px"></div>
+      </div></details>
     </div>
     <div class="card">
       <div class="tablewrap"><table id="driverTable"></table></div>
-      <div class="worked" id="driverExample"></div>
     </div>
   </div>
 
-  <div class="section">
+  <div class="section" data-view="sites">
     <div class="section-head"><h2>Which Site Has Which Problem</h2></div>
-    <div class="section-note">
-      <p>Each row is a part of our service and each column is a site. Every cell answers one question on its own:
-      <b>of the people at that site who actually used that service, what share said they were not satisfied?</b>
-      Darker means worse, and the worst services are at the top. The small figure inside each cell is the count it
-      comes from.</p>
-      <p style="margin-top:8px"><b>The numbers are not meant to add up to 100% in any direction.</b> They are not
-      slices of one pie. Every cell has its own separate group of people, because different customers use different
-      services. At Victoria Island, for example, nearly everyone has a view on urgent results, but only the customers
-      who had a sample collected by courier can rate the courier. So each cell is a percentage of the people in that
-      one cell, never of the site's total responses. The response count under each site name is the site total, and
-      it is there for context only.</p>
-      <p style="margin-top:8px">A blank cell means fewer than 5 people at that site used that service, which is too
-      few to put a number on.</p>
+    <div class="section-note">Each cell: of the people at that site who used that service, the share who were not satisfied. Darker means worse; the worst services are at the top.
+      <details class="how"><summary>How to read this</summary><div>
+        <p><b>The numbers are not meant to add up to 100% in any direction.</b> Every cell has its own separate
+        group of people, because different customers use different services. At Lekki, for example,
+        nearly everyone has a view on urgent results, but only the customers who had a sample collected by courier
+        can rate the courier. The small figure inside each cell is that cell's own base; the count under each site
+        name is the site total, for context only.</p>
+        <p>A blank cell means fewer than 5 people at that site used that service, which is too few to put a
+        number on.</p>
+      </div></details>
     </div>
     <div class="card"><div class="tablewrap" id="heatWrap"></div></div>
   </div>
 
-  <div class="section">
+  <div class="section" data-view="sites">
     <div class="section-head"><h2>Who Is Unhappy</h2></div>
-    <div class="section-note">NPS by segment, not headcount by segment. A segment's bar tells you where it sits between −100 and +100; the number in brackets is its base size.</div>
+    <div class="section-note">NPS by segment, not headcount by segment. The centre line is 0; left of it is net-negative.</div>
     <div class="grid2">
       <div class="card"><h3>Client Type</h3><div class="h3note">"External (location-based)" means a hospital, clinic or corporate that sends samples to us. "Walk-in" means a person who came to the lab themselves.</div><div id="segCat"></div></div>
       <div class="card"><h3>Region</h3><div class="h3note">Site-level detail is in the league table above.</div><div id="segRegion"></div></div>
@@ -356,12 +454,16 @@ footer{padding:20px 28px 40px;font-size:11.5px;color:var(--ink-muted);border-top
     </div>
   </div>
 
-  <div class="section">
+  <div class="section" data-view="feedback" data-break="1">
     <div class="section-head"><h2>What Customers Actually Wrote</h2></div>
-    <div class="section-note">
-      Every written answer is read: both the complaint box <i>and</i> the suggestions box, which is where most
-      written feedback actually lands. Non-answers ("Nil", "N/A", a bare email address) are filtered out.
-      One comment can carry more than one theme, so theme mentions add up to more than the comment count.
+    <div class="section-note">Both the complaint box and the suggestions box are read; non-answers ("Nil", "N/A", a bare email address) are filtered out.
+      <details class="how"><summary>How to read this</summary><div>
+        <p>Most written feedback actually arrives through the suggestions box, not the complaint box, so both are
+        treated as feedback.</p>
+        <p>Themes come from keyword matching, and one comment can carry more than one theme, so theme mentions add
+        up to more than the comment count. The original comments are always shown unedited, so every theme count
+        can be checked against what customers actually wrote.</p>
+      </div></details>
     </div>
     <div class="grid-4060">
       <div class="card">
@@ -371,32 +473,72 @@ footer{padding:20px 28px 40px;font-size:11.5px;color:var(--ink-muted);border-top
       </div>
       <div class="card">
         <h3>Comments</h3>
-        <div class="h3note">Most recent first. Filter by band or theme.</div>
+        <div class="h3note">Most recent first. Filter by band or theme. Comments that sit in the call-back queue link to their case.</div>
         <div class="vfilters" id="vFilters"></div>
         <div class="vlist" id="vList"></div>
       </div>
     </div>
   </div>
 
-  <div class="section">
-    <div class="section-head"><h2>Who To Call Back</h2></div>
-    <div class="section-note" id="recoveryNote"></div>
-    <div class="card"><div class="tablewrap"><table id="recoveryTable"></table></div></div>
+  <div class="section" data-view="feedback">
+    <div class="section-head"><h2>How Themes Are Moving</h2></div>
+    <div class="section-note">What customers write about, period by period, under your current filters. The shaded cell is each theme's busiest period.</div>
+    <div class="card"><div class="tablewrap" id="themeTrend"></div></div>
   </div>
 
-  <div class="section">
+  <div class="section" data-view="followups" data-break="1">
+    <div class="section-head"><h2>Who To Call Back</h2></div>
+    <div class="statstrip" id="fuStats"></div>
+    <div id="recoverySection">
+      <div class="section-note" id="recoveryNote"></div>
+      <div class="card">
+        <div id="fuTools" class="futools"></div>
+        <div class="tablewrap"><table id="recoveryTable"></table></div>
+        <div id="recoveryMore"></div>
+        <div style="margin-top:14px;display:flex;gap:8px;align-items:center">
+          <button class="btn" id="btnCsv" type="button">Download This Queue (CSV)</button>
+          <span class="fumsg">Includes follow-up status. Contact details are never in it.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section" data-view="sites">
     <div class="section-head"><h2>Referring Accounts At Risk</h2></div>
-    <div class="section-note">Hospitals, clinics and corporates that named themselves on the form and returned more than one response. A poor score here puts a whole referral stream at risk, not one visit, so it is worth more attention than a single unhappy walk-in.</div>
+    <div class="section-note">Hospitals, clinics and corporates that named themselves on the form and returned more than one response. A poor score here puts a whole referral stream at risk, not one visit.</div>
     <div class="card"><div class="tablewrap"><table id="accountTable"></table></div></div>
   </div>
 
-  <div class="section">
+  <div class="section" data-view="overview">
     <div class="section-head"><h2>Recommended Actions</h2></div>
-    <div class="section-note">Generated from the numbers on this page for the selected period. Each one names the owner and the figure it is based on.</div>
+    <div class="section-note">Generated from the numbers on this page for your current selection. Each one names the owner and the figure it is based on.</div>
     <div class="recs" id="recs"></div>
   </div>
 
-  <div class="section">
+  <div class="section" data-view="data" data-break="1">
+    <div class="section-head"><h2>Downloads</h2></div>
+    <div class="section-note">For anyone who wants to check this dashboard against the source, or do their own analysis in Excel or Power BI.</div>
+    <div class="card">
+      <ul class="dl">
+        <li><a href="raw-data.xlsx" download>Original survey responses (Excel)</a>
+          <div class="dld">Every response exactly as exported from Microsoft Forms: same rows, same columns, same values.
+          The contact-detail columns (names, emails, phone numbers) are blanked for privacy; everything else is untouched.</div></li>
+        <li><a href="raw-data.csv" download>Original survey responses (CSV)</a>
+          <div class="dld">The same data as the Excel file, for tools that prefer CSV.</div></li>
+        <li><a href="clean-data.csv" download>Cleaned dataset (CSV)</a>
+          <div class="dld">One row per response after cleaning: standardised site names, region, NPS band, themes.
+          This is exactly what the dashboard's own numbers are computed from.</div></li>
+        <li><a href="data.json" download>Cleaned dataset (JSON)</a>
+          <div class="dld">The same cleaned data, for developers and Power BI.</div></li>
+      </ul>
+      <p class="fumsg" style="margin-top:14px">The fully unredacted export, with customer contact details, never
+      leaves the computer that runs the daily refresh. Staff doing call-backs use
+      <code>private/service-recovery.csv</code> on that machine, matched by case number.
+      In this demo every response, name and comment is invented.</p>
+    </div>
+  </div>
+
+  <div class="section" data-view="data">
     <div class="section-head"><h2>Data Quality &amp; Method</h2></div>
     <div class="section-note">Shown so that anyone reading the dashboard can see what was cleaned and what remains uncertain.</div>
     <div class="grid2">
@@ -408,11 +550,85 @@ footer{padding:20px 28px 40px;font-size:11.5px;color:var(--ink-muted);border-top
   <footer id="footer"></footer>
 </div>
 
+<dialog id="fuDialog" class="fudialog" aria-labelledby="fuTitle">
+  <form id="fuForm" novalidate>
+    <h2 id="fuTitle">Log a Follow-up</h2>
+    <div id="fuCaseSummary" class="fucase"></div>
+
+    <div class="frow">
+      <label for="fuAction">What was done?</label>
+      <select id="fuAction" name="action" required aria-describedby="err-action"></select>
+      <p class="ferr" id="err-action" aria-live="polite"></p>
+    </div>
+
+    <div class="frow">
+      <label for="fuDoneOn">When did it happen?</label>
+      <input id="fuDoneOn" name="doneOn" type="date" required aria-describedby="err-doneOn hint-doneOn">
+      <p class="fhint" id="hint-doneOn">If you are logging something done earlier, put the day it actually happened.</p>
+      <p class="ferr" id="err-doneOn" aria-live="polite"></p>
+    </div>
+
+    <div class="frow">
+      <label for="fuBy">Your name</label>
+      <input id="fuBy" name="by" type="text" autocomplete="name" maxlength="80" required
+             placeholder="e.g. Amaka Okafor…" aria-describedby="err-by">
+      <p class="ferr" id="err-by" aria-live="polite"></p>
+    </div>
+
+    <div class="frow">
+      <label for="fuAssigned">Now with (optional)</label>
+      <input id="fuAssigned" name="assignedTo" type="text" maxlength="80"
+             placeholder="e.g. Yaba lab manager…" aria-describedby="hint-assigned err-assignedTo">
+      <p class="fhint" id="hint-assigned">The person or team responsible for the next step, if it is no longer you.</p>
+      <p class="ferr" id="err-assignedTo" aria-live="polite"></p>
+    </div>
+
+    <div class="frow">
+      <label for="fuNote">What happened?</label>
+      <textarea id="fuNote" name="note" rows="4" maxlength="1500" required
+                placeholder="e.g. Spoke to the customer, apologised for the delay, result re-sent by email…"
+                aria-describedby="hint-note err-note"></textarea>
+      <p class="fhint" id="hint-note">Only staff with the team passcode can read this. Please leave out phone numbers and medical details.</p>
+      <p class="ferr" id="err-note" aria-live="polite"></p>
+    </div>
+
+    <div class="frow" id="fuPassRow">
+      <label for="fuPass">Team passcode</label>
+      <input id="fuPass" name="passcode" type="password" autocomplete="off" aria-describedby="err-passcode">
+      <p class="fhint">Asked once per browser tab. In this demo it is <code>demo1234</code>.</p>
+      <p class="ferr" id="err-passcode" aria-live="polite"></p>
+    </div>
+
+    <p class="ferr" id="fuFormErr" role="alert"></p>
+    <div class="factions">
+      <button type="button" class="btn" id="fuCancel">Cancel</button>
+      <button type="submit" class="btn btn-primary" id="fuSave">Save Follow-up</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="fuUnlockDialog" class="fudialog fudialog-sm" aria-labelledby="fuUnlockTitle">
+  <form id="fuUnlockForm" novalidate>
+    <h2 id="fuUnlockTitle">Unlock Team Notes</h2>
+    <p class="fhint" style="margin-bottom:12px">Shows who logged each follow-up and what they wrote. Stays unlocked
+      until you close this browser tab. In this demo the passcode is <code>demo1234</code>.</p>
+    <div class="frow">
+      <label for="fuUnlockPass">Team passcode</label>
+      <input id="fuUnlockPass" name="passcode" type="password" autocomplete="off" required aria-describedby="err-unlock">
+      <p class="ferr" id="err-unlock" aria-live="polite"></p>
+    </div>
+    <div class="factions">
+      <button type="button" class="btn" id="fuUnlockCancel">Cancel</button>
+      <button type="submit" class="btn btn-primary" id="fuUnlockBtn">Unlock</button>
+    </div>
+  </form>
+</dialog>
+
 <script id="payload" type="application/json">/*__PAYLOAD__*/null</script>
 <script>
 "use strict";
 /* ==========================================================================
-   Customer-experience dashboard: view layer.
+   Customer experience dashboard (public demo): view layer.
    All cleaning/derivation happens in the ETL (etl/build.js); this file only
    filters, aggregates and renders.
    ========================================================================== */
@@ -438,7 +654,12 @@ const pct1 = x => (Math.round(x*10)/10).toFixed(1);
 const signed = x => (x > 0 ? '+' : '') + x;
 const dataMaxTs = RECORDS.length ? Math.max(...RECORDS.map(r => r.ts)) : Date.now();
 const dataMinTs = RECORDS.length ? Math.min(...RECORDS.map(r => r.ts)) : Date.now();
-const fmtDate = ts => new Date(ts).toISOString().slice(0,10);
+// Format in LOCAL time: toISOString() converts to UTC, which shifts a local
+// midnight boundary back a day and makes "Q3" look like it starts on 30 June.
+const fmtDate = ts => {
+  const d = new Date(ts);
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+};
 
 function npsStats(rows){
   const scored = rows.filter(r => r.nps !== null);
@@ -495,21 +716,87 @@ function announce(msg){
   announceTimer = setTimeout(() => { $('liveStatus').textContent = msg; }, 250);
 }
 
-/* ---------------------------------------------------------------- filters */
+/* ---------------------------------------------------------------- filters
+   One rule everywhere: the controls can never express a contradiction.
+   - The preset and the year/quarter/month picks are mutually exclusive:
+     touching one side resets the other, and the preset shows "Specific
+     period" whenever a year is in charge.
+   - Quarter and month only offer periods that exist in the data for the
+     chosen year; picking a month snaps the quarter to match; changing the
+     quarter clears a month that falls outside it.
+   - Region and site live in one Location control, so "Region: Lagos" with
+     "Site: Kano" (an empty, misleading result) cannot be selected. */
 const PRESETS = [
-  { id:'90',   label:'Last 90 days' },
-  { id:'180',  label:'Last 6 months' },
-  { id:'365',  label:'Last 12 months' },
-  { id:'ytd',  label:'Year to date' },
-  { id:'all',  label:'All time' }
+  { id:'90',     label:'Last 90 days' },
+  { id:'180',    label:'Last 6 months' },
+  { id:'365',    label:'Last 12 months' },
+  { id:'ytd',    label:'Year to date' },
+  { id:'all',    label:'All time' },
+  { id:'custom', label:'Specific period' }
 ];
+
+// Which years/quarters/months actually contain responses.
+const AVAIL = (() => {
+  const years = new Set(), q = {}, m = {};
+  for (const r of RECORDS){
+    years.add(r.year);
+    (q[r.year] = q[r.year] || new Set()).add(r.quarter);
+    (m[r.year] = m[r.year] || new Set()).add(r.month);
+  }
+  return { years: [...years].sort((a,b)=>b-a), q, m };
+})();
+
+function quarterOfMonth(mm){ return Math.floor((Number(mm)-1)/3) + 1; }
+
+/* Rebuild the quarter and month option lists for the chosen year, keeping the
+   given selections where they are still possible. */
+function rebuildQM(wantQ, wantM){
+  const y = $('fYear').value, qe = $('fQuarter'), me = $('fMonth');
+  if (y === 'all'){
+    qe.innerHTML = '<option value="all">All quarters</option>';
+    me.innerHTML = '<option value="all">All months</option>';
+    qe.value = me.value = 'all';
+    qe.disabled = me.disabled = true;
+    qe.title = me.title = 'Choose a year first';
+    return;
+  }
+  qe.disabled = me.disabled = false;
+  qe.title = me.title = '';
+  const quarters = [...(AVAIL.q[y] || [])].sort((a,b)=>a-b);
+  qe.innerHTML = '<option value="all">All quarters</option>' +
+    quarters.map(x => `<option value="${x}">Q${x}</option>`).join('');
+  qe.value = quarters.includes(Number(wantQ)) ? String(wantQ) : 'all';
+
+  const months = [...(AVAIL.m[y] || [])]
+    .filter(mm => qe.value === 'all' || quarterOfMonth(mm) === Number(qe.value))
+    .sort((a,b)=>a-b);
+  me.innerHTML = '<option value="all">All months</option>' +
+    months.map(mm => `<option value="${mm}">${MONTHS[mm-1]}</option>`).join('');
+  me.value = months.includes(Number(wantM)) ? String(wantM) : 'all';
+}
+
+/* Called whenever one of the four period controls changes. `changed` says
+   which one, so the others can be brought into line. */
+function syncPeriod(changed){
+  const pe = $('fPreset'), ye = $('fYear'), qe = $('fQuarter'), me = $('fMonth');
+  let q = qe.value, m = me.value;
+
+  if (changed === 'preset'){
+    if (pe.value !== 'custom'){ ye.value = 'all'; q = m = 'all'; }
+  } else {
+    pe.value = (ye.value === 'all' && changed === 'year') ? '365' : 'custom';
+    if (changed === 'year' && ye.value === 'all'){ q = m = 'all'; }
+    if (changed === 'month' && m !== 'all') q = String(quarterOfMonth(m));
+    if (changed === 'quarter' && q !== 'all' && m !== 'all' && quarterOfMonth(m) !== Number(q)) m = 'all';
+  }
+  rebuildQM(q, m);
+}
 
 function currentWindow(){
   const p = $('fPreset').value;
-  const y = $('fYear').value, q = $('fQuarter').value, m = $('fMonth').value;
-
-  // An explicit year/quarter/month selection always wins over the preset.
-  if (y !== 'all'){
+  if (p === 'custom'){
+    const y = $('fYear').value, q = $('fQuarter').value, m = $('fMonth').value;
+    if (y === 'all') return { from:dataMinTs, to:dataMaxTs, comparable:false };
     const yr = Number(y);
     let from = new Date(yr,0,1), to = new Date(yr,11,31,23,59,59);
     if (q !== 'all'){ const qi = Number(q)-1; from = new Date(yr,qi*3,1); to = new Date(yr,qi*3+3,0,23,59,59); }
@@ -526,11 +813,19 @@ function currentWindow(){
 }
 
 function dimFilter(rows){
-  const region = $('fRegion').value, site = $('fSite').value, cat = $('fCat').value;
-  return rows.filter(r =>
-    (region === 'all' || r.region === region) &&
-    (site   === 'all' || r.site   === site) &&
-    (cat    === 'all' || r.clientCategory === cat));
+  const loc = $('fLoc').value, cat = $('fCat').value;
+  return rows.filter(r => {
+    if (loc.startsWith('site:')   && r.site   !== loc.slice(5)) return false;
+    if (loc.startsWith('region:') && r.region !== loc.slice(7)) return false;
+    if (cat !== 'all' && r.clientCategory !== cat) return false;
+    return true;
+  });
+}
+
+function locationLabel(){
+  const v = $('fLoc').value;
+  if (v === 'all') return null;
+  return v.startsWith('site:') ? v.slice(5) : 'All ' + v.slice(7) + ' sites';
 }
 
 function getScope(){
@@ -549,33 +844,71 @@ function getScope(){
 function buildFilters(){
   $('fPreset').innerHTML = PRESETS.map(p =>
     `<option value="${p.id}"${p.id==='365'?' selected':''}>${p.label}</option>`).join('');
-
-  const years = [...new Set(RECORDS.map(r => r.year))].sort((a,b)=>b-a);
   $('fYear').innerHTML = '<option value="all">All years</option>' +
-    years.map(y => `<option value="${y}">${y}</option>`).join('');
-  $('fQuarter').innerHTML = '<option value="all">All quarters</option>' +
-    [1,2,3,4].map(q => `<option value="${q}">Q${q}</option>`).join('');
-  $('fMonth').innerHTML = '<option value="all">All months</option>' +
-    MONTHS.map((m,i) => `<option value="${i+1}">${m}</option>`).join('');
+    AVAIL.years.map(y => `<option value="${y}">${y}</option>`).join('');
+  rebuildQM('all','all');
 
-  const regions = [...new Set(RECORDS.map(r => r.region))].sort();
-  $('fRegion').innerHTML = '<option value="all">All regions</option>' +
-    regions.map(v => `<option value="${esc(v)}">${esc(v)}</option>`).join('');
-  const sites = [...new Set(RECORDS.map(r => r.site))].sort();
-  $('fSite').innerHTML = '<option value="all">All sites</option>' +
-    sites.map(v => `<option value="${esc(v)}">${esc(v)}</option>`).join('');
+  // One Location control: whole company, a region, or a single site.
+  const byRegion = {};
+  for (const r of RECORDS) (byRegion[r.region] = byRegion[r.region] || new Set()).add(r.site);
+  $('fLoc').innerHTML = '<option value="all">All sites</option>' +
+    Object.keys(byRegion).sort().map(reg => `<optgroup label="${esc(reg)}">` +
+      `<option value="region:${esc(reg)}">All ${esc(reg)} sites</option>` +
+      [...byRegion[reg]].sort().map(s => `<option value="site:${esc(s)}">${esc(s)}</option>`).join('') +
+      `</optgroup>`).join('');
+
   const cats = [...new Set(RECORDS.map(r => r.clientCategory))].sort();
   $('fCat').innerHTML = '<option value="all">All client types</option>' +
     cats.map(v => `<option value="${esc(v)}">${esc(v)}</option>`).join('');
+}
+
+/* ================================================================ VIEWS */
+const VIEWS = [
+  ['overview',  'Overview'],
+  ['sites',     'Sites & Services'],
+  ['feedback',  'Customer Feedback'],
+  ['followups', 'Follow-ups'],
+  ['data',      'Data & Exports']
+];
+let activeView = 'overview';
+let caseParam = null;
+
+function buildTabs(){
+  $('tabbar').innerHTML = VIEWS.map(([id, label]) =>
+    `<button type="button" class="tabbtn" data-viewbtn="${id}">${label}<span class="tabn" data-tabn="${id}" hidden></span></button>`).join('');
+  $('tabbar').addEventListener('click', e => {
+    const b = e.target.closest('[data-viewbtn]');
+    if (b) setView(b.dataset.viewbtn);
+  });
+}
+
+function setView(v, opts = {}){
+  if (!VIEWS.some(x => x[0] === v)) v = 'overview';
+  activeView = v;
+  document.querySelectorAll('.section[data-view]').forEach(s => { s.hidden = s.dataset.view !== v; });
+  document.querySelectorAll('[data-viewbtn]').forEach(b => {
+    const on = b.dataset.viewbtn === v;
+    b.classList.toggle('on', on);
+    if (on) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current');
+  });
+  writeUrlState();
+  // A chart initialised inside a hidden tab has zero size; redraw when shown.
+  if (v === 'overview' && lastScope) renderTrend(lastScope);
+  if (!opts.silent){
+    window.scrollTo({ top: 0 });
+    announce(`${(VIEWS.find(x => x[0] === v) || [])[1]} section shown.`);
+  }
 }
 
 /* ================================================================ RENDERERS */
 let charts = {};
 let siteSort = { key:'n', dir:'desc' };
 let vFilter = { band:'all', theme:'all' };
+let lastScope = null;
 
 function render(){
   const scope = getScope();
+  lastScope = scope;
   renderPeriod(scope);
   renderAlerts(scope);
   renderKpis(scope);
@@ -586,6 +919,7 @@ function render(){
   renderHeatmap(scope);
   renderSegments(scope);
   renderVoice(scope);
+  renderThemeTrend(scope);
   renderRecovery(scope);
   renderAccounts(scope);
   renderRecs(scope);
@@ -593,15 +927,25 @@ function render(){
 }
 
 /* ---------- period + freshness ---------- */
-function renderPeriod({ rows, window:w }){
-  const presetLabel = ($('fYear').value !== 'all')
-    ? [$('fYear').value,
+function periodText(){
+  const p = $('fPreset').value;
+  if (p === 'custom' && $('fYear').value !== 'all'){
+    return [$('fYear').value,
        $('fQuarter').value !== 'all' ? 'Q'+$('fQuarter').value : null,
-       $('fMonth').value !== 'all' ? MONTHS[Number($('fMonth').value)-1] : null].filter(Boolean).join(' · ')
-    : (PRESETS.find(p => p.id === $('fPreset').value) || {}).label;
-  const dims = [$('fRegion').value, $('fSite').value, $('fCat').value].filter(v => v !== 'all');
-  $('periodLabel').textContent = presetLabel + (dims.length ? ' · ' + dims.join(' · ') : '');
+       $('fMonth').value !== 'all' ? MONTHS[Number($('fMonth').value)-1] : null].filter(Boolean).join(' · ');
+  }
+  if (p === 'custom') return 'All time';
+  return (PRESETS.find(x => x.id === p) || {}).label;
+}
+
+function renderPeriod({ rows, window:w }){
+  const dims = [locationLabel(), $('fCat').value !== 'all' ? $('fCat').value : null].filter(Boolean);
+  $('periodLabel').textContent = periodText() + (dims.length ? ' · ' + dims.join(' · ') : '');
   $('periodMeta').textContent = `${fmtDate(w.from)} to ${fmtDate(w.to)} · ${rows.length} responses`;
+  $('printMeta').textContent =
+    `Selection: ${periodText()}${dims.length ? ', ' + dims.join(', ') : ''} · ` +
+    `${fmtDate(w.from)} to ${fmtDate(w.to)} · ${rows.length} responses · ` +
+    `data to ${META.dateTo} · printed ${new Date().toLocaleString('en-GB')}`;
 
   const built = new Date(META.builtAt);
   const ageH = Math.floor((Date.now() - built.getTime())/3600000);
@@ -661,11 +1005,25 @@ function renderAlerts({ rows, prev, window:w }){
       d:`${top.unsat} of ${top.app} applicable respondents were dissatisfied (${pct1(100-top.pct)}%). Their NPS is ${top.npsUnsat} against ${top.npsSat} for those who were satisfied.` });
   }
 
-  // Overdue recovery
-  const overdue = recoveryQueue(rows).filter(r => r.ageDays > TH.recoverySlaDays && r.contactRequested === 'Yes');
-  if (overdue.length){
-    a.push({ lvl:'critical', t:`${overdue.length} detractor${overdue.length===1?'':'s'} asked to be contacted more than ${TH.recoverySlaDays} days ago and have not been called back`,
-      d:`The longest wait is ${Math.max(...overdue.map(r=>r.ageDays))} days. Full contact details are in the daily service-recovery export.` });
+  // Callbacks. Only claim nobody called when the follow-up log actually says so.
+  const askedLongAgo = recoveryQueue(rows).filter(r => r.ageDays > TH.recoverySlaDays && r.contactRequested === 'Yes');
+  const plural = n => n === 1 ? '' : 's';
+  if (FU.state === 'ready'){
+    const waiting = askedLongAgo.filter(fuNeedsAction);
+    if (waiting.length){
+      const nothing = waiting.filter(r => fuStatusOf(r.id).key === 'open').length;
+      const tried = waiting.length - nothing;
+      a.push({ lvl:'critical',
+        t:`${waiting.length} customer${plural(waiting.length)} asked to be contacted more than ${TH.recoverySlaDays} days ago with no contact logged`,
+        d:`${nothing} ha${nothing === 1 ? 's' : 've'} nothing logged at all${tried ? `, and ${tried} ${tried === 1 ? 'was' : 'were'} tried but not reached` : ''}. The longest wait is ${Math.max(...waiting.map(r => r.ageDays))} days. Each one is in the Who To Call Back table with a Log Follow-up button.` });
+    } else if (askedLongAgo.length){
+      a.push({ lvl:'good', t:'Every customer who asked to be contacted has a follow-up logged',
+        d:`${askedLongAgo.length} asked more than ${TH.recoverySlaDays} days ago, and each has at least one contact recorded in the follow-up log.` });
+    }
+  } else if (askedLongAgo.length){
+    a.push({ lvl:'warning',
+      t:`${askedLongAgo.length} customer${plural(askedLongAgo.length)} asked to be contacted more than ${TH.recoverySlaDays} days ago`,
+      d:`The follow-up log ${FU.state === 'loading' ? 'is still loading' : 'could not be reached'}, so this page cannot say whether they were called back.` });
   }
 
   if (!a.length) a.push({ lvl:'good', t:'Nothing has crossed a threshold this period',
@@ -701,21 +1059,28 @@ function renderKpis({ rows, prev, window:w }){
   const prevAddrPct = prevAddressed.length
     ? prevAddressed.filter(r => r.complaintsAddressed === 'Yes').length/prevAddressed.length*100 : null;
 
-  const unresolved = rows.filter(r => r.complaintsAddressed === 'No').length;
-  const queue = recoveryQueue(rows);
   const withVerbatim = rows.filter(r => r.hasVerbatim).length;
 
   $('kpiNote').textContent = comparable
-    ? `Each "vs prior period" figure compares this period against the ${Math.round((w.to-w.from)/DAY)} days immediately before it, with the same site and client filters applied. "pp" means percentage points.`
+    ? `Each "vs prior period" figure compares this period against the ${Math.round((w.to-w.from)/DAY)} days immediately before it, with the same location and client filters applied. "pp" means percentage points.`
     : 'This selection has no comparable period before it, so no comparisons are shown.';
 
   const sat = overallSatisfaction(rows);
   const prevSat = overallSatisfaction(prev);
+  const avgOf = rs => {
+    const sc = rs.filter(r => r.nps !== null);
+    return sc.length ? sc.reduce((a, r) => a + r.nps, 0) / sc.length : null;
+  };
+  const avg = avgOf(rows), prevAvg = avgOf(prev);
 
   const cards = [
     { lbl:'NPS', val: c.nps === null ? '&mdash;' : c.nps,
       sub: `Scale &minus;100 to +100. Not a percentage. ${c.n} scored responses.`,
       delta: comparable ? deltaHtml(c.nps, p.n >= 5 ? p.nps : null, '', false) : '' },
+    { lbl:'Average score', val: avg === null ? '&mdash;' : avg.toFixed(1),
+      sub: 'out of 10, on the recommendation question',
+      delta: comparable ? deltaHtml(avg === null ? null : Math.round(avg*10)/10,
+        (p.n >= 5 && prevAvg !== null) ? Math.round(prevAvg*10)/10 : null, '', false) : '' },
     { lbl:'Overall satisfaction', val: sat.pct === null ? '&mdash;' : pct1(sat.pct)+'%',
       sub: `${sat.sat} of ${sat.app} service ratings were "Satisfied"`,
       delta: comparable ? deltaHtml(sat.pct, prevSat.app >= 30 ? prevSat.pct : null, 'pp', false) : '' },
@@ -723,15 +1088,15 @@ function renderKpis({ rows, prev, window:w }){
       delta: comparable ? deltaHtml(rows.length, prev.length, '', false) : '' },
     { lbl:'Promoters', val: pct1(c.pPct)+'%', sub: `${c.p} people scored us 9 or 10`,
       delta: comparable ? deltaHtml(c.pPct, p.n >= 5 ? p.pPct : null, 'pp', false) : '' },
+    // No up/down colouring on passives: fewer passives is good if they became
+    // promoters and bad if they became detractors, so the direction alone
+    // carries no verdict.
+    { lbl:'Passives', val: pct1(c.paPct)+'%', sub: `${c.pa} people scored us 7 or 8`, delta:'' },
     { lbl:'Detractors', val: pct1(c.dPct)+'%', sub: `${c.d} people scored us 6 or below`,
       delta: comparable ? deltaHtml(c.dPct, p.n >= 5 ? p.dPct : null, 'pp', true) : '' },
     { lbl:'Complaint handling', val: addrPct === null ? '&mdash;' : pct1(addrPct)+'%',
       sub: `${addrYes} of ${addressed.length} said "adequately addressed"`,
-      delta: comparable ? deltaHtml(addrPct, prevAddrPct, 'pp', false) : '' },
-    { lbl:'Unresolved', val: unresolved,
-      sub: 'said their complaint was NOT addressed', delta:'' },
-    { lbl:'Recovery queue', val: queue.length,
-      sub: `${queue.filter(r => r.contactRequested === 'Yes').length} asked to be contacted`, delta:'' }
+      delta: comparable ? deltaHtml(addrPct, prevAddrPct, 'pp', false) : '' }
   ];
   // val and sub are built above from counts and fixed strings only, never from
   // customer-entered text, so the entities in them are meant to render.
@@ -1143,50 +1508,371 @@ function renderVoice({ rows }){
     .sort((a,b) => b.ts - a.ts)          // genuinely newest first
     .slice(0, 60);
 
-  $('vList').innerHTML = list.length ? list.map(r => `
+  $('vList').innerHTML = list.length ? list.map(r => {
+    // If this comment is a case in the call-back queue, show where it stands
+    // and link straight to it, so feedback and follow-up stay one story.
+    let caseBits = '';
+    if (inRecovery(r)){
+      const st = FU.state === 'ready' ? fuStatusOf(r.id) : null;
+      caseBits = (st ? `<span class="tag" title="Follow-up status from the log">${esc(st.label)}</span>` : '') +
+        `<button type="button" class="btn btn-sm btn-quiet" data-fu-goto="${esc(r.id)}">Case ${esc(r.id)} &rsaquo;</button>`;
+    }
+    return `
     <div class="v ${(r.band||'').toLowerCase()}">
       <div class="vhead">
         <span class="tag score">${r.nps === null ? 'no score' : 'NPS ' + r.nps}</span>
         ${(r.themes||[]).slice(0,3).map(t => `<span class="tag">${esc(t)}</span>`).join('')}
         ${r.complaintsAddressed === 'No' ? '<span class="tag" style="background:#fbe3e3;color:#8c2626">unresolved</span>' : ''}
         ${r.contactRequested === 'Yes' ? '<span class="tag" style="background:#fff4d8;color:#7a5600">wants contact</span>' : ''}
+        ${caseBits}
       </div>
       ${r.complaint  ? `<div class="vtext"><span class="k">Complaint</span>${esc(r.complaint)}</div>` : ''}
       ${r.suggestion ? `<div class="vtext"><span class="k">Suggestion</span>${esc(r.suggestion)}</div>` : ''}
       <div class="vmeta">${esc(r.site)} · ${esc(r.date)} · ${esc(r.clientCategory)}${r.org ? ' · ' + esc(r.org) : ''}</div>
-    </div>`).join('') : '<div class="empty">No comments match these filters.</div>';
+    </div>`;
+  }).join('') : '<div class="empty">No comments match these filters.</div>';
 }
 
+/* ---------- theme trend ---------- */
+function renderThemeTrend({ rows }){
+  const withText = rows.filter(r => r.hasVerbatim);
+  if (withText.length < 10){
+    $('themeTrend').innerHTML = '<div class="empty">Not enough written comments in this selection to show a trend.</div>';
+    return;
+  }
+  // Bucket by quarter when the selection spans several, otherwise by month.
+  const spanDays = (Math.max(...withText.map(r=>r.ts)) - Math.min(...withText.map(r=>r.ts))) / DAY;
+  const byQuarter = spanDays >= 180;
+  const bucketOf = r => byQuarter ? `${r.year} Q${r.quarter}` : `${MONTHS[r.month-1]} ${r.year}`;
+  const bucketKey = r => byQuarter ? r.year*10 + r.quarter : r.year*100 + r.month;
+
+  const buckets = [...new Map(withText.map(r => [bucketKey(r), bucketOf(r)])).entries()]
+    .sort((a,b) => a[0]-b[0]).map(x => x[1]).slice(-6);
+  const bucketTotals = {};
+  const counts = {};   // theme -> bucket label -> count
+  for (const r of withText){
+    const b = bucketOf(r);
+    if (!buckets.includes(b)) continue;
+    bucketTotals[b] = (bucketTotals[b] || 0) + 1;
+    for (const t of (r.themes || [])){
+      (counts[t] = counts[t] || {})[b] = (counts[t][b] || 0) + 1;
+    }
+  }
+  const topThemes = Object.entries(counts)
+    .map(([t, m]) => [t, Object.values(m).reduce((a,b)=>a+b,0)])
+    .sort((a,b) => b[1]-a[1]).slice(0, 7).map(x => x[0]);
+
+  const head = `<tr><th>Theme</th>${buckets.map(b =>
+    `<th>${esc(b)}<div style="font-weight:400;color:var(--ink-muted)">${bucketTotals[b] || 0} comment${(bucketTotals[b]||0)===1?'':'s'}</div></th>`).join('')}</tr>`;
+  const body = topThemes.map(t => {
+    const vals = buckets.map(b => (counts[t] || {})[b] || 0);
+    const max = Math.max(...vals);
+    return `<tr><td>${esc(t)}</td>${buckets.map((b,i) => {
+      const n = vals[i], tot = bucketTotals[b] || 0;
+      const share = tot ? Math.round(n/tot*100) : 0;
+      const cls = n === 0 ? 'zero' : (n === max && max > 0 ? 'hi' : '');
+      return `<td class="${cls}" title="${n} of ${tot} comments in ${esc(b)}">${n}${n ? `<span style="color:var(--ink-muted)"> (${share}%)</span>` : ''}</td>`;
+    }).join('')}</tr>`;
+  }).join('');
+  $('themeTrend').innerHTML =
+    `<table class="trend"><thead>${head}</thead><tbody>${body}</tbody></table>
+     <p class="fumsg" style="margin-top:10px">Counts are comments mentioning each theme, ${byQuarter ? 'per quarter' : 'per month'};
+     the percentage is that theme's share of the period's comments. A comment can mention several themes.</p>`;
+}
+
+
+/* ---------- demo follow-up log ----------
+   The live version stores follow-ups on a small server function, so every
+   colleague sees them. GitHub Pages has no server, so this public demo runs the
+   same rules in the browser instead: entries are saved only in this visitor's
+   browser, and a few invented ones are added on first visit so the queue is not
+   empty. Demo passcode: demo1234. */
+const DEMO_PASSCODE = 'demo1234';
+const DEMO_STORE_KEY = 'demo.fu.entries.v1';
+const FU_ACTIONS = {
+  called:    { label: 'Called and spoke to the customer',  moves: 'progress' },
+  messaged:  { label: 'Emailed or messaged the customer',  moves: 'progress' },
+  met:       { label: 'Met the customer in person',        moves: 'progress' },
+  no_answer: { label: 'Tried to reach them, no answer',    moves: 'attempt'  },
+  awaiting:  { label: 'Reached them, waiting to hear back', moves: 'awaiting' },
+  escalated: { label: 'Passed to another team to handle',  moves: 'progress' },
+  resolved:  { label: 'Resolved',                          moves: 'resolved' },
+  closed:    { label: 'Closed without reaching them',      moves: 'closed'   },
+  note:      { label: 'Note only, no change in status',    moves: 'none'     }
+};
+let demoMemory = null;   // used when the browser blocks localStorage
+function demoEntries(){
+  if (demoMemory) return demoMemory;
+  try {
+    const saved = localStorage.getItem(DEMO_STORE_KEY);
+    if (saved) return (demoMemory = JSON.parse(saved));
+  } catch (_) {}
+  demoMemory = demoSeed();
+  demoSave();
+  return demoMemory;
+}
+function demoSave(){ try { localStorage.setItem(DEMO_STORE_KEY, JSON.stringify(demoMemory)); } catch (_) {} }
+function demoReset(){ try { localStorage.removeItem(DEMO_STORE_KEY); } catch (_) {} demoMemory = null; }
+function demoSeed(){
+  // Invented history for a handful of the highest-priority cases.
+  const newest = Math.max(...RECORDS.map(r => r.ts));
+  const cases = RECORDS.filter(r => inRecovery(r) && newest - r.ts < 300 * DAY)   // inside the default 12-month view
+    .sort((a,b) => b.recoveryScore - a.recoveryScore || b.ts - a.ts);
+  const iso = (ts, plusDays) => new Date(ts + plusDays * DAY).toISOString().slice(0, 10);
+  const script = [
+    [[1,'called','Ada (customer relations)','Urgent result was a day late. Apologised, confirmed the result had been sent by SMS.'],
+     [2,'resolved','Ada (customer relations)','Customer satisfied with the explanation. No further action.']],
+    [[1,'no_answer','Tunde (call centre)','Rang twice, no answer.'],
+     [3,'called','Tunde (call centre)','Reached on the third try. Billing query about a duplicate invoice.'],
+     [4,'escalated','Tunde (call centre)','Passed to accounts to check the invoice.', 'Accounts team']],
+    [[2,'messaged','Ada (customer relations)','Sent an apology email and asked for a convenient time to call.'],
+     [3,'awaiting','Ada (customer relations)','Customer replied, will call back after work.']],
+    [[1,'no_answer','Tunde (call centre)','Number rings out.']],
+    [[1,'called','Grace (branch manager)','Spoke to the clinic manager about courier pickup times.'],
+     [5,'note','Grace (branch manager)','Courier route changed from next week.'],
+     [9,'resolved','Grace (branch manager)','Clinic confirmed pickups are now on time.']],
+    [[3,'closed','Ada (customer relations)','Three attempts over two weeks, no response. Closing.']]
+  ];
+  const out = [];
+  script.forEach((steps, i) => {
+    const c = cases[i * 3];
+    if (!c) return;
+    for (const [d, action, by, note, assignedTo] of steps){
+      const doneOn = iso(c.ts, d);
+      const e = { id: 'seed-' + c.id + '-' + d, caseId: String(c.id), action, doneOn, by, note,
+                  loggedAt: doneOn + 'T10:00:00.000Z' };
+      if (assignedTo) e.assignedTo = assignedTo;
+      out.push(e);
+    }
+  });
+  return out;
+}
+const demoJson = (status, body) => new Response(JSON.stringify(body), { status, headers: { 'Content-Type':'application/json' } });
+async function fuFetch(_url, opts = {}){
+  const offered = (opts.headers || {})['x-team-passcode'] || '';
+  const unlocked = offered === DEMO_PASSCODE;
+  const entries = demoEntries().slice().sort((a,b) => (a.doneOn + a.loggedAt).localeCompare(b.doneOn + b.loggedAt));
+  if ((opts.method || 'GET') === 'GET'){
+    return demoJson(200, { configured: true, unlocked, passcodeRejected: !!offered && !unlocked, actions: FU_ACTIONS,
+      entries: unlocked ? entries : entries.map(({ by, note, assignedTo, ...rest }) => rest) });
+  }
+  if (!unlocked) return demoJson(401, { error: 'That team passcode is not right. In this demo it is demo1234.' });
+  let body; try { body = JSON.parse(opts.body); } catch (_) { return demoJson(400, { error: 'Could not read the form.' }); }
+  const clean = (v, max) => String(v == null ? '' : v).trim().slice(0, max);
+  const errors = {};
+  const caseId = clean(body.caseId, 40), action = clean(body.action, 20), doneOn = clean(body.doneOn, 10);
+  const by = clean(body.by, 80), note = clean(body.note, 1500), assignedTo = clean(body.assignedTo, 80);
+  const tomorrow = new Date(Date.now() + DAY).toISOString().slice(0, 10);
+  if (!/^[A-Za-z0-9_-]{1,40}$/.test(caseId)) errors.caseId = 'Unknown case.';
+  if (!FU_ACTIONS[action]) errors.action = 'Choose what was done.';
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(doneOn) || isNaN(Date.parse(doneOn))) errors.doneOn = 'Enter the date it happened.';
+  else if (doneOn > tomorrow) errors.doneOn = 'The date cannot be in the future.';
+  else if (doneOn < '2024-01-01') errors.doneOn = 'That date is too far back.';
+  if (by.length < 2) errors.by = 'Enter your name.';
+  if (note.length < 3) errors.note = 'Write a short note on what happened.';
+  if (Object.keys(errors).length) return demoJson(422, { error: 'Please check the highlighted fields.', fields: errors });
+  const record = { id: Date.now().toString(36) + '-' + Math.random().toString(16).slice(2, 10),
+                   caseId, action, doneOn, by, note, loggedAt: new Date().toISOString() };
+  if (assignedTo) record.assignedTo = assignedTo;
+  demoEntries().push(record); demoSave();
+  return demoJson(201, { entry: record });
+}
+
+/* ---------- follow-up log ----------
+   In the live version this is fetched from the server, so it is
+   instantly visible to everyone once saved. Without the team passcode a
+   visitor sees THAT a case was followed up, what kind of action and when.
+   With it, they also see who did it and the note. */
+const FU_URL = '/api/followups';
+const FU_STATUS = {
+  open:     { label:'Not followed up',    cls:'bad'  },
+  attempt:  { label:'Tried, not reached', cls:'warn' },
+  awaiting: { label:'Awaiting customer',  cls:'wait' },
+  progress: { label:'In progress',        cls:'info' },
+  resolved: { label:'Resolved',           cls:'ok'   },
+  closed:   { label:'Closed',             cls:''     }
+};
+const FU = { state:'loading', configured:false, unlocked:false, actions:{}, byCase:new Map(), passcode:null };
+let fuFilter = 'all';
+let fuShowAll = false;
+const fuOpenHistory = new Set();
+
+const fuDate = new Intl.DateTimeFormat('en-GB', { day:'numeric', month:'short', year:'numeric' });
+const fuDateTime = new Intl.DateTimeFormat('en-GB', { day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
+const fmtDay = iso => { const d = new Date(iso + (iso.length === 10 ? 'T12:00:00' : '')); return isNaN(d) ? iso : fuDate.format(d); };
+const localToday = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; };
+
+function fuStored(key, value){
+  try {
+    if (value === undefined) return sessionStorage.getItem(key);
+    if (value === null) sessionStorage.removeItem(key); else sessionStorage.setItem(key, value);
+  } catch (_) { return null; }
+}
+function fuRemembered(key, value){
+  try {
+    if (value === undefined) return localStorage.getItem(key);
+    localStorage.setItem(key, value);
+  } catch (_) { return null; }
+}
+
+async function fuLoad(){
+  FU.passcode = FU.passcode || fuStored('cl.fu.passcode');
+  try {
+    const res = await fuFetch(FU_URL, { headers: FU.passcode ? { 'x-team-passcode': FU.passcode } : {}, cache:'no-store' });
+    if (!res.ok) throw new Error(res.status);
+    const b = await res.json();
+    FU.state = 'ready';
+    FU.configured = b.configured;
+    FU.unlocked = b.unlocked;
+    FU.actions = b.actions || {};
+    if (b.passcodeRejected){
+      // The passcode was changed since this browser last used it.
+      FU.passcode = null; fuStored('cl.fu.passcode', null);
+      announce('The saved team passcode no longer works. Unlock again with the new one.');
+    }
+    FU.byCase = new Map();
+    for (const e of b.entries || []){
+      const k = String(e.caseId);
+      if (!FU.byCase.has(k)) FU.byCase.set(k, []);
+      FU.byCase.get(k).push(e);
+    }
+  } catch (_) {
+    FU.state = 'unavailable';
+  }
+  render();
+}
+
+function fuStatusOf(caseId){
+  const list = FU.byCase.get(String(caseId)) || [];
+  let st = 'open';
+  for (const e of list){
+    const m = (FU.actions[e.action] || {}).moves;
+    if (m === 'attempt') { if (st === 'open') st = 'attempt'; }
+    else if (m === 'awaiting' || m === 'progress' || m === 'resolved' || m === 'closed') st = m;
+  }
+  const meaningful = list.filter(e => (FU.actions[e.action] || {}).moves !== 'none');
+  return { key: st, ...FU_STATUS[st], last: meaningful[meaningful.length - 1] || null, entries: list };
+}
+const fuNeedsAction = r => FU.state === 'ready' && ['open','attempt'].includes(fuStatusOf(r.id).key);
+
 /* ---------- service recovery ---------- */
+const inRecovery = r =>
+  r.band === 'Detractor' || r.complaintsAddressed === 'No' || (r.contactRequested === 'Yes' && r.band !== 'Promoter');
+
 function recoveryQueue(rows){
   const now = Date.now();
   return rows
-    .filter(r => r.band === 'Detractor' || r.complaintsAddressed === 'No' || (r.contactRequested === 'Yes' && r.band !== 'Promoter'))
+    .filter(inRecovery)
     .map(r => ({ ...r, ageDays: Math.floor((now - r.ts)/DAY) }))
     .sort((a,b) => b.recoveryScore - a.recoveryScore || b.ts - a.ts);
 }
 
 let recoveryRows = [];
+const FU_FILTERS = [
+  ['all',      'All cases'],
+  ['open',     'Not followed up'],
+  ['attempt',  'Tried, not reached'],
+  ['awaiting', 'Awaiting customer'],
+  ['progress', 'In progress'],
+  ['done',     'Resolved or closed']
+];
+const fuMatches = (r, f) => {
+  if (f === 'all' || FU.state !== 'ready') return true;
+  const k = fuStatusOf(r.id).key;
+  return f === 'done' ? (k === 'resolved' || k === 'closed') : k === f;
+};
+
+function fuToolsHtml(){
+  if (FU.state === 'loading') return '<div class="fumsg">Loading the follow-up log…</div>';
+  if (FU.state === 'unavailable') return `<div class="fumsg">The follow-up log could not be reached. </div>`;
+  const counts = Object.fromEntries(FU_FILTERS.map(([k]) => [k, recoveryRows.filter(r => fuMatches(r, k)).length]));
+  const chips = FU_FILTERS.map(([k, l]) =>
+    `<button type="button" class="chip" data-fu-filter="${k}" aria-pressed="${fuFilter === k}">${l} <span class="chipn">${counts[k]}</span></button>`).join('');
+  const lockUi = !FU.configured
+    ? `<span class="fumsg">Logging is not switched on yet: run <code>SET-TEAM-PASSCODE.cmd</code> on the dashboard computer.</span>`
+    : FU.unlocked
+      ? `<span class="flag ok">Team notes unlocked</span> <button type="button" class="btn btn-sm" data-fu-lock>Lock</button> <button type="button" class="btn btn-sm" data-demo-reset>Reset demo log</button>`
+      : `<span class="fumsg">Demo passcode: <code>demo1234</code></span> <button type="button" class="btn btn-sm" data-fu-unlock>Unlock Team Notes</button> <button type="button" class="btn btn-sm" data-demo-reset>Reset demo log</button>`;
+  return `<div class="futools-row"><div class="vfilters" style="margin:0">${chips}</div><div class="spacer"></div>${lockUi}</div>`;
+}
+
+function fuCell(r){
+  if (FU.state === 'loading') return '<span class="fumsg">Loading…</span>';
+  if (FU.state === 'unavailable') return '<span class="fumsg">Unknown</span>';
+  const s = fuStatusOf(r.id);
+  const last = s.last
+    ? `<div class="fulast">${esc((FU.actions[s.last.action] || {}).label || s.last.action)}, ${esc(fmtDay(s.last.doneOn))}</div>` : '';
+  const n = s.entries.length;
+  const btns = `<div class="fubtns">
+      <button type="button" class="btn btn-sm" data-fu-log="${esc(r.id)}"${FU.configured ? '' : ' disabled title="Logging is not switched on yet"'}>Log Follow-up</button>
+      ${n ? `<button type="button" class="btn btn-sm btn-quiet" data-fu-hist="${esc(r.id)}" aria-expanded="${fuOpenHistory.has(String(r.id))}">History (${n})</button>` : ''}
+    </div>`;
+  return `<span class="flag ${s.cls}">${s.label}</span>${last}${btns}`;
+}
+
+function fuHistoryRow(r, cols){
+  if (!fuOpenHistory.has(String(r.id))) return '';
+  const s = fuStatusOf(r.id);
+  const items = s.entries.slice().reverse().map(e => `
+    <li>
+      <div class="fuh-head"><b>${esc(fmtDay(e.doneOn))}</b> · ${esc((FU.actions[e.action] || {}).label || e.action)}
+        ${FU.unlocked && e.by ? ` · by ${esc(e.by)}` : ''}${FU.unlocked && e.assignedTo ? ` · now with ${esc(e.assignedTo)}` : ''}</div>
+      ${FU.unlocked && e.note ? `<div class="fuh-note">${esc(e.note)}</div>` : ''}
+      <div class="fuh-meta">Logged ${esc(fuDateTime.format(new Date(e.loggedAt)))}</div>
+    </li>`).join('');
+  const lockedNote = FU.unlocked ? '' :
+    '<p class="fumsg" style="margin-top:6px">Unlock team notes to see who did it and what was said.</p>';
+  return `<tr class="fuhist"><td colspan="${cols}"><ol class="fuh-list">${items}</ol>${lockedNote}</td></tr>`;
+}
+
 function renderRecovery({ rows }){
   recoveryRows = recoveryQueue(rows);
   const wants = recoveryRows.filter(r => r.contactRequested === 'Yes');
   const overdue = wants.filter(r => r.ageDays > TH.recoverySlaDays);
+  const overdueNoFollowUp = overdue.filter(fuNeedsAction);
   const showContacts = META.contactDetailsPublished === 'mask';
+
+  const noContact = FU.state === 'ready' ? recoveryRows.filter(fuNeedsAction).length : null;
+  $('fuStats').innerHTML = [
+    { lbl:'In the queue', val: recoveryRows.length, sub:'detractors, unresolved complaints, callback requests' },
+    { lbl:'Asked to be contacted', val: wants.length,
+      sub:`${overdue.length} asked more than ${TH.recoverySlaDays} days ago` },
+    { lbl:'No contact logged', val: noContact === null ? 'n/a' : noContact,
+      sub: noContact === null ? 'follow-up log not reachable' : 'cases still showing no follow-up at all' },
+    { lbl:'Unresolved complaints', val: rows.filter(r => r.complaintsAddressed === 'No').length,
+      sub:'said their complaint was NOT addressed' }
+  ].map(k => `<div class="kpi"><div class="lbl">${esc(k.lbl)}</div><div class="val">${k.val}</div>
+      <div class="sub">${esc(k.sub)}</div></div>`).join('');
+
+  // The Follow-ups tab badge shows how many cases still have no contact logged.
+  const tn = document.querySelector('[data-tabn="followups"]');
+  if (tn){ tn.hidden = !noContact; tn.textContent = noContact || ''; }
+
   $('recoveryNote').innerHTML =
-    `Everyone who scored us 6 or below, said their complaint went unaddressed, or asked us to get in touch.
-     They are ranked by a priority score built from how low they scored us, whether their complaint went unaddressed,
-     whether they asked for a call, how many parts of the service they were unhappy with, and whether they are a
-     referring account rather than a walk-in. <b>${recoveryRows.length}</b> in the queue,
-     <b>${wants.length}</b> explicitly asked to be contacted, <b>${overdue.length}</b> of those have been waiting longer than
-     ${TH.recoverySlaDays} days. ` +
+    `When someone follows a case up, click <b>Log Follow-up</b> on that row. It shows here straight away, for everyone.
+     <details class="how"><summary>How this queue works</summary><div>
+       <p>The queue holds everyone who scored us 6 or below, said their complaint went unaddressed, or asked us to
+       get in touch. Cases are ranked by a priority score built from how low they scored us, whether their complaint
+       went unaddressed, whether they asked for a call, how many parts of the service they were unhappy with, and
+       whether they are a referring account rather than a walk-in.</p>
+       <p>Follow-up entries cannot be edited or deleted; a mistake is corrected by logging a new entry saying so.
+       Anyone with the link can see that a case was followed up and when. Who did it, who it was passed to, and the
+       written note are visible only to staff with the team passcode.</p>
+       <p>` +
     (showContacts
       ? `Contact details are masked here. The unmasked list is written to <code>private/service-recovery.csv</code> by the daily job and is deliberately not published.`
-      : `<b>Names, emails and phone numbers are deliberately not published on this page.</b> Match a case by its date, site and comment; the full callback list with contact details is written to <code>private/service-recovery.csv</code> on the machine that runs the daily job.`);
+      : `<b>Names, emails and phone numbers are never published on this page.</b> Staff doing call-backs match the
+         case number against <code>private/service-recovery.csv</code> on the machine that runs the daily refresh.`) +
+    '</p></div></details>';
 
-  const top = recoveryRows.slice(0, 40);
+  $('fuTools').innerHTML = fuToolsHtml();
+
+  const filtered = recoveryRows.filter(r => fuMatches(r, fuFilter));
+  const shown = fuShowAll ? filtered : filtered.slice(0, 40);
+  const COLS = 8;
   const head = `<thead><tr><th class="num">Priority</th><th>Submitted</th><th>Site</th><th class="num">NPS</th>
-    <th>${showContacts ? 'Contact' : 'Reachable'}</th><th>What they said</th><th>Status</th></tr></thead>`;
-  const body = top.map(r => {
+    <th>${showContacts ? 'Contact' : 'Reachable'}</th><th>What they said</th><th>Flags</th><th>Follow-up</th></tr></thead>`;
+  const body = shown.map(r => {
     const late = r.contactRequested === 'Yes' && r.ageDays > TH.recoverySlaDays;
     const text = [r.complaint, r.suggestion].filter(Boolean).join(' · ');
     const contactCell = showContacts
@@ -1194,21 +1880,185 @@ function renderRecovery({ rows }){
          <div style="color:var(--ink-muted);font-size:10.5px">${esc(r.contactEmail || r.contactPhone || '')}</div>`
       : (r.hasContact ? '<span class="flag ok">details on file</span>'
                       : '<span style="color:var(--ink-muted)">no details left</span>');
-    return `<tr>
+    return `<tr data-caseid="${esc(r.id)}"${String(r.id) === String(caseParam) ? ' class="rowhl"' : ''}>
       <td class="num"><b>${r.recoveryScore}</b></td>
-      <td>${esc(r.date)}<div style="font-size:10.5px;color:${late?'var(--bad-ink)':'var(--ink-muted)'}">${r.ageDays} days ago${late?' · overdue':''}</div></td>
+      <td>${esc(r.date)}<div style="font-size:10.5px;color:${late?'var(--bad-ink)':'var(--ink-muted)'}">${r.ageDays} days ago${late?' · overdue':''}</div>
+        <div style="font-size:10px;color:var(--ink-muted)">Case ${esc(r.id)}</div></td>
       <td>${esc(r.site)}</td>
       <td class="num npsval ${r.nps !== null && r.nps >= 0 ? 'pos':'neg'}">${r.nps === null ? 'n/a' : r.nps}</td>
       <td style="font-size:11.5px">${contactCell}</td>
-      <td style="font-size:11.5px;max-width:460px">${text ? esc(text.slice(0,260)) + (text.length>260?'…':'') : '<span style="color:var(--ink-muted)">no written comment</span>'}</td>
+      <td style="font-size:11.5px;max-width:420px;overflow-wrap:break-word">${text ? esc(text.slice(0,260)) + (text.length>260?'…':'') : '<span style="color:var(--ink-muted)">no written comment</span>'}</td>
       <td style="font-size:11px">
         ${r.contactRequested === 'Yes' ? '<span class="flag bad">wants contact</span>' : ''}
         ${r.complaintsAddressed === 'No' ? '<span class="flag warn">unresolved</span>' : ''}
         ${r.clientCategory && /external/i.test(r.clientCategory) ? '<span class="flag" title="A hospital, clinic or corporate that sends samples to us, rather than someone walking in off the street">Referring account</span>' : ''}</td>
-    </tr>`;
+      <td class="fucell">${fuCell(r)}</td>
+    </tr>${fuHistoryRow(r, COLS)}`;
   }).join('');
-  $('recoveryTable').innerHTML = head + `<tbody>${body || '<tr><td colspan="7" class="empty">Queue is empty for this period.</td></tr>'}</tbody>` +
-    (recoveryRows.length > 40 ? `<caption style="caption-side:bottom;text-align:left;font-size:11px;color:var(--ink-muted);padding-top:8px">Showing the top 40 of ${recoveryRows.length}. Use Export CSV for the full masked list.</caption>` : '');
+  const emptyMsg = fuFilter === 'all' ? 'Queue is empty for this period.' : 'No cases with this follow-up status in this period.';
+  $('recoveryTable').innerHTML = head + `<tbody>${body || `<tr><td colspan="${COLS}" class="empty">${emptyMsg}</td></tr>`}</tbody>`;
+
+  $('recoveryMore').innerHTML = filtered.length > 40
+    ? `<p class="fumsg" style="margin-top:10px">Showing ${shown.length} of ${filtered.length}.
+         <button type="button" class="btn btn-sm" data-fu-showall>${fuShowAll ? 'Show Top 40 Only' : `Show All ${filtered.length}`}</button></p>`
+    : '';
+}
+
+/* ---------- follow-up dialogs ---------- */
+let fuCase = null;
+
+function fuOpenLog(caseId){
+  const r = recoveryRows.find(x => String(x.id) === String(caseId));
+  if (!r) return;
+  fuCase = r;
+  const f = $('fuForm');
+  f.reset();
+  f.querySelectorAll('.ferr').forEach(e => e.textContent = '');
+  $('fuFormErr').textContent = '';
+  const text = [r.complaint, r.suggestion].filter(Boolean).join(' · ');
+  $('fuCaseSummary').innerHTML = `<b>Case ${esc(r.id)}</b> · ${esc(r.site)} · submitted ${esc(fmtDay(r.date))} · NPS ${r.nps === null ? 'n/a' : r.nps}
+    ${text ? `<div class="fuq">“${esc(text.slice(0,220))}${text.length > 220 ? '…' : ''}”</div>` : ''}`;
+  f.elements.action.innerHTML = '<option value="">Choose…</option>' + Object.entries(FU.actions)
+    .map(([k, v]) => `<option value="${esc(k)}">${esc(v.label)}</option>`).join('');
+  f.elements.doneOn.value = localToday();
+  f.elements.doneOn.max = localToday();
+  f.elements.by.value = fuRemembered('cl.fu.name') || '';
+  $('fuPassRow').hidden = FU.unlocked;
+  f.elements.passcode.required = !FU.unlocked;
+  $('fuDialog').showModal();
+  f.elements.action.focus();
+}
+
+function fuCloseLog(force){
+  const f = $('fuForm');
+  if (!force && f.elements.note.value.trim() && !confirm('Discard this follow-up note? It has not been saved.')) return false;
+  $('fuDialog').close();
+  return true;
+}
+
+async function fuSubmit(ev){
+  ev.preventDefault();
+  const f = ev.target;
+  f.querySelectorAll('.ferr').forEach(e => e.textContent = '');
+  $('fuFormErr').textContent = '';
+  const pass = FU.unlocked && FU.passcode ? FU.passcode : f.elements.passcode.value;
+  const data = { caseId: String(fuCase.id), action: f.elements.action.value, doneOn: f.elements.doneOn.value,
+                 by: f.elements.by.value.trim(), note: f.elements.note.value.trim(),
+                 assignedTo: f.elements.assignedTo.value.trim() };
+
+  // Check everything here first so every gap is flagged at once. The server
+  // repeats these checks; this is only so nobody has to submit four times.
+  const local = {};
+  if (!data.action) local.action = 'Choose what was done.';
+  if (!data.doneOn) local.doneOn = 'Enter the date it happened.';
+  else if (data.doneOn > localToday()) local.doneOn = 'The date cannot be in the future.';
+  if (data.by.length < 2) local.by = 'Enter your name.';
+  if (data.note.length < 3) local.note = 'Write a short note on what happened.';
+  if (!pass) local.passcode = 'Enter the team passcode.';
+  if (Object.keys(local).length){
+    let first = null;
+    for (const [k, msg] of Object.entries(local)){ $('err-' + k).textContent = msg; first = first || f.elements[k]; }
+    $('fuFormErr').textContent = 'Please fill in the highlighted fields.';
+    first.focus();
+    return;
+  }
+
+  const btn = $('fuSave');
+  btn.disabled = true; btn.textContent = 'Saving…';
+  try {
+    const res = await fuFetch(FU_URL, { method:'POST',
+      headers: { 'Content-Type':'application/json', 'x-team-passcode': pass }, body: JSON.stringify(data) });
+    const b = await res.json().catch(() => ({}));
+    if (res.status === 201){
+      FU.passcode = pass; fuStored('cl.fu.passcode', pass);
+      fuRemembered('cl.fu.name', data.by);
+      fuOpenHistory.add(String(fuCase.id));
+      fuCloseLog(true);
+      announce(`Follow-up saved for case ${fuCase.id}.`);
+      await fuLoad();
+      return;
+    }
+    if (res.status === 401){
+      FU.passcode = null; fuStored('cl.fu.passcode', null); FU.unlocked = false;
+      $('fuPassRow').hidden = false; f.elements.passcode.required = true;
+      $('err-passcode').textContent = 'That team passcode is not right.';
+      f.elements.passcode.focus();
+    } else if (res.status === 422 && b.fields){
+      let first = null;
+      for (const [k, msg] of Object.entries(b.fields)){
+        const el = $('err-' + k);
+        if (el) { el.textContent = msg; first = first || f.elements[k]; }
+      }
+      $('fuFormErr').textContent = b.error || 'Please check the highlighted fields.';
+      if (first && first.focus) first.focus();
+    } else {
+      $('fuFormErr').textContent = b.error || 'Could not save. Check your connection and try again.';
+    }
+  } catch (_) {
+    $('fuFormErr').textContent = 'Could not reach the follow-up log. Check your internet connection and try again. Nothing was saved.';
+  } finally {
+    btn.disabled = false; btn.textContent = 'Save Follow-up';
+  }
+}
+
+async function fuSubmitUnlock(ev){
+  ev.preventDefault();
+  const f = ev.target;
+  $('err-unlock').textContent = '';
+  const btn = $('fuUnlockBtn');
+  btn.disabled = true; btn.textContent = 'Checking…';
+  try {
+    const res = await fuFetch(FU_URL, { headers: { 'x-team-passcode': f.elements.passcode.value }, cache:'no-store' });
+    const b = await res.json();
+    if (b.unlocked){
+      FU.passcode = f.elements.passcode.value; fuStored('cl.fu.passcode', FU.passcode);
+      $('fuUnlockDialog').close();
+      announce('Team notes unlocked for this browser tab.');
+      await fuLoad();
+    } else {
+      $('err-unlock').textContent = 'That team passcode is not right.';
+      f.elements.passcode.select();
+    }
+  } catch (_) {
+    $('err-unlock').textContent = 'Could not reach the follow-up log. Check your internet connection.';
+  } finally {
+    btn.disabled = false; btn.textContent = 'Unlock';
+  }
+}
+
+function fuWire(){
+  // One delegated listener for everything inside the call-back section, because
+  // the table is rebuilt on every render.
+  $('recoverySection').addEventListener('click', e => {
+    const t = e.target.closest('button');
+    if (!t) return;
+    if (t.dataset.fuFilter){ fuFilter = t.dataset.fuFilter; fuShowAll = false; renderRecovery({ rows: getScope().rows }); }
+    else if (t.dataset.fuLog){ fuOpenLog(t.dataset.fuLog); }
+    else if (t.dataset.fuHist){
+      const id = t.dataset.fuHist;
+      fuOpenHistory.has(id) ? fuOpenHistory.delete(id) : fuOpenHistory.add(id);
+      renderRecovery({ rows: getScope().rows });
+      const again = $('recoverySection').querySelector(`[data-fu-hist="${CSS.escape(id)}"]`);
+      if (again) again.focus();
+    }
+    else if ('fuShowall' in t.dataset){ fuShowAll = !fuShowAll; renderRecovery({ rows: getScope().rows }); }
+    else if ('fuUnlock' in t.dataset){ $('fuUnlockForm').reset(); $('err-unlock').textContent = ''; $('fuUnlockDialog').showModal(); }
+    else if ('demoReset' in t.dataset){
+      if (!confirm('Clear the follow-ups saved in this browser and restore the demo examples?')) return;
+      demoReset(); announce('Demo follow-up log reset.'); fuLoad();
+    }
+    else if ('fuLock' in t.dataset){
+      FU.passcode = null; fuStored('cl.fu.passcode', null);
+      announce('Team notes locked.');
+      fuLoad();
+    }
+  });
+  $('fuForm').addEventListener('submit', fuSubmit);
+  $('fuCancel').addEventListener('click', () => fuCloseLog(false));
+  // Escape key: ask before throwing away a half-written note.
+  $('fuDialog').addEventListener('cancel', e => { e.preventDefault(); fuCloseLog(false); });
+  $('fuUnlockForm').addEventListener('submit', fuSubmitUnlock);
+  $('fuUnlockCancel').addEventListener('click', () => $('fuUnlockDialog').close());
 }
 
 /* ---------- accounts ---------- */
@@ -1284,11 +2134,15 @@ function renderRecs({ rows, prev, window:w }){
   }
 
   const wants = recoveryQueue(rows).filter(r => r.contactRequested === 'Yes');
-  const overdue = wants.filter(r => r.ageDays > TH.recoverySlaDays);
-  if (wants.length){
+  const pending = FU.state === 'ready' ? wants.filter(fuNeedsAction) : wants;
+  const overdue = pending.filter(r => r.ageDays > TH.recoverySlaDays);
+  if (pending.length){
+    const known = FU.state === 'ready';
     recs.push({ who:'Customer Relations',
-      t:`Work the ${wants.length}-person callback list${overdue.length ? `, of whom ${overdue.length} have been waiting longer than ${TH.recoverySlaDays} days` : ''}`,
-      d:`These respondents explicitly ticked "yes, contact me" and left details. ${overdue.length ? `The oldest has been waiting ${Math.max(...overdue.map(r=>r.ageDays))} days.` : 'All are currently within ' + TH.recoverySlaDays + ' days.'} Turning one of them from a detractor into a promoter is worth roughly ${s.n ? (200/s.n).toFixed(1) : 'n/a'} points at the current number of responses, before any effect on revenue.` });
+      t: known
+        ? `Call back the ${pending.length} customer${pending.length === 1 ? '' : 's'} who asked and have no contact logged`
+        : `Work the ${wants.length}-person callback list`,
+      d:`These customers ticked "yes, contact me" and left details.${known && wants.length > pending.length ? ` ${wants.length - pending.length} others already have contact logged.` : ''} ${overdue.length ? `The longest wait is ${Math.max(...overdue.map(r=>r.ageDays))} days.` : `All asked within the last ${TH.recoverySlaDays} days.`} Log each call in the Who To Call Back table so the next audit can see it was done. Turning one of them from a detractor into a promoter is worth roughly ${s.n ? (200/s.n).toFixed(1) : 'n/a'} points at the current number of responses, before any effect on revenue.` });
   }
 
   if (w.comparable && prev.length >= 10 && rows.length/Math.max(prev.length,1) < 0.7){
@@ -1351,14 +2205,15 @@ function renderMeta({ rows }){
     ['Themes', 'Keyword tagging over both the complaint box and the suggestions box. A comment can carry several themes, so mentions exceed comment count. Keywords live in etl/config.js and can be extended without touching the dashboard.'],
     ['Sample thresholds', `Sites under ${TH.minSampleForRanking} responses are flagged; months under ${TH.minSampleForTrend} are drawn as hollow points; touchpoint cells under 5 applicable answers are left blank.`],
     ['Comparison period', 'The equally long window immediately before the selected one, with the same site, region and client-type filters applied.'],
+    ['Follow-up status', 'Worked out from the follow-up log, in the order things were logged. <b>Not followed up</b>: nothing logged. <b>Tried, not reached</b>: only unanswered attempts. <b>In progress</b>: the customer was reached, or the case was passed to another team. <b>Resolved</b> and <b>Closed</b>: someone marked it finished. A "Note only" entry never changes the status. Entries cannot be edited or deleted from the dashboard; each one records both the day it happened and the moment it was logged, so a follow-up logged after the fact is visible as such.'],
     ['Targets', `NPS target ${TH.npsTarget} (on the &minus;100 to +100 scale) and satisfaction target ${TH.satisfactionTarget}%. Source: ${esc(TH.targetSource)}. Both are set in <code>etl/config.js</code>.`]
   ].map(([k,v]) => `<dt>${k}</dt><dd>${v}</dd>`).join('');
 
   $('footer').innerHTML =
     `Customer Experience and NPS Dashboard, public demo on synthetic data. Every branch, clinic and person is fictional.<br>
      Source: Microsoft Forms customer survey export, ${esc(META.dateFrom)} to ${esc(META.dateTo)}, ${META.loadedRows} responses.
-     Rebuilt automatically each day; last build ${esc(META.builtAt.slice(0,16).replace('T',' '))} UTC.
-     Internal circulation only.`;
+     Last build ${esc(META.builtAt.slice(0,16).replace('T',' '))} UTC.
+     Follow-ups you log here are saved only in your own browser.`;
 }
 
 /* ---------- CSV export ---------- */
@@ -1367,7 +2222,21 @@ function exportCsv(){
     ...(META.contactDetailsPublished === 'mask' ? ['contactName','contactEmail','contactPhone'] : ['hasContact']),
     'contactRequested','complaintsAddressed','themePrimary','complaint','suggestion'];
   const q = v => { const s = v == null ? '' : String(v); return /[",\n]/.test(s) ? '"'+s.replace(/"/g,'""')+'"' : s; };
-  const csv = [cols.join(',')].concat(recoveryRows.map(r => cols.map(c => q(r[c])).join(','))).join('\n');
+  // Follow-up columns come from the live log; who and the note only if unlocked.
+  const fuCols = FU.state !== 'ready' ? [] :
+    ['followUpStatus','lastFollowUp','lastFollowUpOn',
+     ...(FU.unlocked ? ['lastFollowUpBy','lastFollowUpAssignedTo','lastFollowUpNote'] : [])];
+  const withFu = r => {
+    if (!fuCols.length) return r;
+    const st = fuStatusOf(r.id), l = st.last;
+    return { ...r, caseId: r.id, followUpStatus: st.label,
+      lastFollowUp: l ? (FU.actions[l.action] || {}).label || l.action : '',
+      lastFollowUpOn: l ? l.doneOn : '', lastFollowUpBy: l ? l.by || '' : '',
+      lastFollowUpAssignedTo: l ? l.assignedTo || '' : '', lastFollowUpNote: l ? l.note || '' : '' };
+  };
+  const allCols = ['caseId', ...cols, ...fuCols];
+  const csv = [allCols.join(',')]
+    .concat(recoveryRows.map(withFu).map(r => allCols.map(c => q(c === 'caseId' ? r.id : r[c])).join(','))).join('\n');
   const blob = new Blob(['﻿'+csv], { type:'text/csv;charset=utf-8' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
@@ -1377,22 +2246,33 @@ function exportCsv(){
 }
 
 /* ------------------------------------------------------- URL state sync
-   Filters live in the query string, so a filtered view can be bookmarked and
-   shared. "Kano, last 90 days" is then a link somebody can keep. */
-const FILTER_IDS = ['fPreset','fYear','fQuarter','fMonth','fRegion','fSite','fCat'];
+   Filters, the open section and a focused case all live in the query string,
+   so "Kano, Q3 2026, follow-ups, case 434" is a link somebody can keep. */
+const FILTER_IDS = ['fPreset','fYear','fQuarter','fMonth','fLoc','fCat'];
 const URL_KEYS = { fPreset:'period', fYear:'year', fQuarter:'quarter', fMonth:'month',
-                   fRegion:'region', fSite:'site', fCat:'client' };
+                   fLoc:'loc', fCat:'client' };
+const PERIOD_KIND = { fPreset:'preset', fYear:'year', fQuarter:'quarter', fMonth:'month' };
 
 function readUrlState(){
   const q = new URLSearchParams(location.search);
-  FILTER_IDS.forEach(id => {
-    const v = q.get(URL_KEYS[id]);
+  const put = (id, v) => {
     if (v === null) return;
     const sel = $(id);
     // Ignore a value that is not actually an option, e.g. a site that has
     // been renamed since the link was shared.
     if ([...sel.options].some(o => o.value === v)) sel.value = v;
-  });
+  };
+  put('fPreset', q.get('period'));
+  put('fYear',   q.get('year'));
+  rebuildQM(q.get('quarter') || 'all', q.get('month') || 'all');
+  // A shared link may predate the cascade rules; bring it into line.
+  if ($('fYear').value !== 'all') $('fPreset').value = 'custom';
+  else if ($('fPreset').value === 'custom') $('fPreset').value = '365';
+  if ($('fMonth').value !== 'all') $('fQuarter').value = String(quarterOfMonth($('fMonth').value));
+  put('fLoc', q.get('loc'));
+  put('fCat', q.get('client'));
+  caseParam = (q.get('case') || '').match(/^[A-Za-z0-9_-]{1,40}$/) ? q.get('case') : null;
+  setView(q.get('view') || 'overview', { silent:true });
 }
 
 function writeUrlState(){
@@ -1402,14 +2282,36 @@ function writeUrlState(){
     const isDefault = id === 'fPreset' ? v === '365' : v === 'all';
     if (!isDefault) q.set(URL_KEYS[id], v);
   });
+  if (activeView !== 'overview') q.set('view', activeView);
+  if (caseParam) q.set('case', caseParam);
   const qs = q.toString();
   history.replaceState(null, '', qs ? `?${qs}` : location.pathname);
+}
+
+/* Jump from anywhere (e.g. a comment card) to one case in the Follow-ups tab. */
+function focusCase(id){
+  caseParam = String(id);
+  fuFilter = 'all';
+  fuShowAll = true;
+  fuOpenHistory.add(String(id));
+  setView('followups', { silent:true });
+  renderRecovery({ rows: getScope().rows });
+  writeUrlState();
+  const row = document.querySelector(`#recoveryTable tr[data-caseid="${CSS.escape(String(id))}"]`);
+  if (row){
+    row.scrollIntoView({ block:'center' });
+    announce(`Showing case ${id} in the follow-ups section.`);
+  } else {
+    announce(`Case ${id} is not in the queue under the current filters.`);
+  }
 }
 
 /* ---------------------------------------------------------------- wiring */
 FILTER_IDS.forEach(id => {
   $(id).addEventListener('change', () => {
+    if (PERIOD_KIND[id]) syncPeriod(PERIOD_KIND[id]);
     vFilter = { band:'all', theme:'all' };
+    caseParam = null;
     writeUrlState();
     render();
     announce(`Filters updated. ${$('periodMeta').textContent}`);
@@ -1417,19 +2319,30 @@ FILTER_IDS.forEach(id => {
 });
 $('btnReset').addEventListener('click', () => {
   $('fPreset').value = '365';
-  ['fYear','fQuarter','fMonth','fRegion','fSite','fCat'].forEach(id => $(id).value = 'all');
+  $('fYear').value = 'all';
+  rebuildQM('all','all');
+  ['fLoc','fCat'].forEach(id => $(id).value = 'all');
   siteSort = { key:'n', dir:'desc' };
   vFilter = { band:'all', theme:'all' };
+  caseParam = null;
   writeUrlState();
   render();
   announce('Filters reset to the last 12 months, all sites.');
 });
 $('btnPrint').addEventListener('click', () => window.print());
 $('btnCsv').addEventListener('click', exportCsv);
+document.addEventListener('click', e => {
+  const t = e.target.closest('[data-fu-goto]');
+  if (t) focusCase(t.dataset.fuGoto);
+});
 
+buildTabs();
 buildFilters();
 readUrlState();
 render();
+fuWire();
+fuLoad();          // re-renders once the follow-up log arrives
+if (caseParam) focusCase(caseParam);
 </script>
 </body>
 </html>
