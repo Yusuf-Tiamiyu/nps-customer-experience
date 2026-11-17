@@ -273,6 +273,9 @@ function render(payload) {
                   path.join(DIST, 'chart.umd.min.js'));
 
   fs.copyFileSync(path.join(ROOT, 'src', 'favicon.svg'), path.join(DIST, 'favicon.svg'));
+  // Link-preview image for LinkedIn and other sites (og:image in the template).
+  const preview = path.join(ROOT, 'src', 'preview.png');
+  if (fs.existsSync(preview)) fs.copyFileSync(preview, path.join(DIST, 'preview.png'));
   fs.writeFileSync(path.join(DIST, 'favicon.ico'), buildIco());
   fs.writeFileSync(path.join(DIST, 'data.json'), JSON.stringify(payload, null, 0), 'utf8');
   // Netlify reads _headers on a direct file upload (netlify.toml is only read
